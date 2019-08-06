@@ -6,7 +6,6 @@ Route::group(['prefix' => 'event'], function () {
     Route::get('/', 'IndexController@allEvent');
     Route::get('{event?}', 'IndexController@listevent');
     Route::get('{event?}/{id?}', 'IndexController@viewEvent');
-    Route::get('get-importir', 'ApiController@getImportir');
 });
 
 Route::post('registration', 'IndexController@registration');

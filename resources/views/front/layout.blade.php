@@ -19,6 +19,42 @@
 	<link rel="stylesheet" href="{{ url('theme/css/core.css') }}">
 	<link rel="stylesheet" href="{{ url('theme/css/style.css') }}" >
 	<link rel="stylesheet" href="{{ url('theme/css/responsive.css') }}" >
+<style>
+#body-loader {
+    position:fixed;
+    width:100%;
+    left:0;right:0;top:0;bottom:0;
+    background-color: rgba(255,255,255,0.7);
+    z-index:9999;
+    display:none;
+}
+
+@-webkit-keyframes spin {
+    from {-webkit-transform:rotate(0deg);}
+    to {-webkit-transform:rotate(360deg);}
+}
+
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}
+
+#body-loader::after {
+    content:'';
+    display:block;
+    position:absolute;
+    left:48%;top:40%;
+    width:40px;height:40px;
+    border-style:solid;
+    border-color:black;
+    border-top-color:transparent;
+    border-width: 4px;
+    border-radius:50%;
+    -webkit-animation: spin .8s linear infinite;
+    animation: spin .8s linear infinite;
+}
+</style>
+@yield('css')
 </head>
 <body>
 <header id="masthead" class="site-header">
@@ -91,112 +127,7 @@
 	</div>
 </section>
 
-<section class="section-artist-content">
-	<div class="container">
-		<div class="row">
-			<div id="primary" class="col-sm-12 col-md-8">
-				@foreach ($event as $e)
-				<div class="artist-event-item">
-					<div class="row">
-						<div class="artist-event-item-info col-sm-9">
-							<h3>Seminar IMPORTIR.ORG - {{ ucfirst($e->city) }}</h3>
-							<ul class="row">
-								<li class="col-sm-5">
-									<img src="{{ $e->image }}" class="img-fluid" alt="">
-								</li>
-								<li class="col-sm-7">
-									<p>{!! $e->description !!}</p>
-								</li>
-							</ul>
-						</div>
-						<div class="artist-event-item-price col-sm-3">
-							<span>Price From</span>
-							<strong>$83</strong>
-							<a href="#">Book Now</a>
-						</div>
-					</div>
-				</div>
-				@endforeach
-				<div class="artist-event-footer">
-					<ul class="pagination">
-						<li>
-							<a href="#" aria-label="Previous">
-								<span aria-hidden="true"><i class="fa fa-long-arrow-left" aria-hidden="true"></i> Previous</span>
-							</a>
-						</li>
-						<li><a href="#">1</a></li>
-						<li><a href="#">2</a></li>
-						<li class="active"><a href="#">3</a></li>
-						<li><a href="#">4</a></li>
-						<li><a href="#">5</a></li>
-						<li>
-							<a href="#" aria-label="Next">
-								<span aria-hidden="true">Next <i class="fa fa-long-arrow-right" aria-hidden="true"></i></span>
-							</a>
-						</li>
-					</ul>
-				</div>
-			</div>
-			
-			<div id="secondary" class="col-sm-12 col-md-4">
-				<div class="artist-details">
-					<img src="theme/images/artist-img-profile.jpg" alt="image">
-					<div class="artist-details-title">
-						<h3>Serena Gemez</h3>
-						<a href="#">Follow</a>
-					</div>
-					
-					<div class="artist-details-info">
-						<h4>About</h4>
-						<p>Lorem ipsum dolor sit amet, consectetuer adipi elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
-					</div>
-				</div>
-				
-				<div class="related-artist">
-					<h3>RELATED ARTISTS</h3>
-					<ul class="related-artist-list">
-						<li class="related-artist-item">
-							<div class="related-artist-img col-md-12 col-lg-4">
-								<a href="#"><img src="theme/images/related-artist-1.jpg" alt="image"></a>
-							</div>
-							<div class="related-artist-info col-md-12 col-lg-8">
-								<h4><a href="#">Jason Carpenter</a></h4>
-								<a href="#">Follow</a>
-							</div>
-						</li>
-						<li class="related-artist-item">
-							<div class="related-artist-img col-md-12 col-lg-4">
-								<a href="#"><img src="theme/images/related-artist-2.jpg" alt="image"></a>
-							</div>
-							<div class="related-artist-info col-md-12 col-lg-8">
-								<h4><a href="#">Elizabeth Simmons</a></h4>
-								<a href="#">Follow</a>
-							</div>
-						</li>
-						<li class="related-artist-item">
-							<div class="related-artist-img col-md-12 col-lg-4">
-								<a href="#"><img src="theme/images/related-artist-3.jpg" alt="image"></a>
-							</div>
-							<div class="related-artist-info col-md-12 col-lg-8">
-								<h4><a href="#">Christina Guerrero</a></h4>
-								<a href="#">Follow</a>
-							</div>
-						</li>
-						<li class="related-artist-item">
-							<div class="related-artist-img col-md-12 col-lg-4">
-								<a href="#"><img src="theme/images/related-artist-4.jpg" alt="image"></a>
-							</div>
-							<div class="related-artist-info col-md-12 col-lg-8">
-								<h4><a href="#">Michelle Cunningham</a></h4>
-								<a href="#">Follow</a>
-							</div>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-</section>
+@yield('content')
 
 <footer id="colophon" class="site-footer">
 	<div class="top-footer">
@@ -208,7 +139,7 @@
 				</div>
 				<div class="col-md-4">
 				
-				<p>&copy; 2016 MYTICKET.COM. ALL RIGHTS RESEVED</p>
+				<p>&copy; 2016 MTICKET.ASIA ALL RIGHTS RESEVED</p>
 				</div>
 			</div>
 			
@@ -219,29 +150,6 @@
 		<div class="container">
 			<div class="row">
 			  <div class="footer-1 col-md-9">
-				<div class="about clearfix">
-					<h3>About</h3>
-					<ul>
-						<li><a href="#">Our Company</a></li>
-						<li><a href="#">Careers</a></li>
-						<li><a href="#">Advertising</a></li>
-						<li><a href="#">Press Room</a></li>
-						<li><a href="#">Trademarks</a></li>
-						<li><a href="#">Terms of Service</a></li>
-						<li><a href="#">Privacy Policy</a></li>
-					</ul>
-				  </div>
-				  
-				  <div class="support clearfix">
-					<h3>Support and Contact</h3>
-					<ul>
-						<li><a href="#">Customer Support Contacts</a></li>
-						<li><a href="#">Feedback</a></li>
-						<li><a href="#">Help</a></li>
-						<li><a href="#">Sitemap</a></li>
-					</ul>
-				  </div>
-				  
 				  <div class="social clearfix">
 					<h3>Stay Connected</h3>
 					<ul>
@@ -251,29 +159,17 @@
 								Facebook
 							</a>
 						</li>
-						<li class="twitter">
-							<a href="#">
-								<i class="fa fa-twitter" aria-hidden="true"></i>
-								Twitter
-							</a>
-						</li>
 						<li class="linkedin">
 							<a href="#">
-								<i class="fa fa-linkedin-square" aria-hidden="true"></i>
-								LinkedIn
+								<i class="fa fa-instagram" aria-hidden="true"></i>
+								Instagram
 							</a>
 						</li>
 						<li class="google">
 							<a href="#">
-								<i class="fa fa-google-plus-square" aria-hidden="true"></i>
-									Google+
+								<i class="fa fa-youtube" aria-hidden="true"></i>
+									Youtube
 								</a>
-						</li>
-						<li class="rss">
-							<a href="#">
-								<i class="fa fa-rss-square" aria-hidden="true"></i>
-								RSS
-							</a>
 						</li>
 					</ul>
 				  </div>
@@ -281,10 +177,8 @@
 
 			  <div class="footer-2 col-md-3">
 				 <div class="footer-dashboard">
-					<h3>MyTicket Dashboard</h3>
 					<ul>
-						<li><a href="#">Professional</a></li>
-						<li><a href="#">Subscriber Login</a></li>
+						<li><a href="#">Terms & Condition</a></li>
 					</ul>
 				  </div>
 			  </div>
@@ -293,7 +187,7 @@
 		</div>
 	</div>
 </footer><!-- #colophon -->
-
+<div id="body-loader"></div>
 <script src="{{ url('theme/js/jquery-3.2.0.min.js') }}"></script>
 <script src="{{ url('theme/js/bootstrap-slider.min.js') }}"></script>
 <script src="{{ url('theme/js/bootstrap-select.min.js') }}"></script>
@@ -307,5 +201,6 @@
 <script src="{{ url('theme/js/featherlight.gallery.min.js') }}"></script>
 <script src="{{ url('theme/js/bootstrap.offcanvas.min.js') }}"></script>
 <script src="{{ url('theme/js/main.js') }}"></script>
+@yield('js')
 </body>
 </html>

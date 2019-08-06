@@ -29,9 +29,9 @@ class IndexController extends Controller
     {
         $event = $this->event->getEvent();
         if ($request->ajax()) {
-            return view('front.load', compact('event'));
+            return view('front.allevent.ajax', compact('event'));
         }
-        return view('front.layout', compact('event'));
+        return view('front.allevent.index', compact('event'));
     }
 
     public function listevent(Request $request, $type = null)

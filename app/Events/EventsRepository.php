@@ -30,7 +30,7 @@ class EventsRepository
 
     public function getEvent()
     {
-        return Events::orderBy('id', 'desc')->paginate(10);
+        return Events::orderBy('id', 'desc')->paginate(5);
     }
 
     public function registration($inputs = [])
@@ -80,13 +80,43 @@ class EventsRepository
         return $data->save();
     }
 
-    public function cronjob($id, $events)
+    public function getEvents($array)
     {
-        $data = Events::where('source_id', $id)->first();
-        if (!$data) {
-            $data   = new Events($events);
+        foreach($array as $row){
+            if($row['seminar_type'] == 'event') {
+                $type = 'seminar';
+            } else {
+                $type = $row['seminar_type'];
+            }
+            if ($row['seminar_title'] == '') {
+               $title = 'Seminar Importir.org - '.$row['city'];
+            } else {
+                $title = $row['seminar_title'];
+            }
+            $events = [
+                'source_id'             => $row['id'],
+                'type'                  => $type,
+                'title'                 => $title,
+                'description'           => $row['info']['desc'],
+                'image'                 => $row['info']['maps'],
+                'city'                  => $row['city'],
+                'price'                 => $row['info']['one_person_fee'],
+                'event_date'            => $row['info']['event_date'],
+                'before_paid_sms'       => $row['info']['before_paid_sms'],
+                'after_paid_sms'        => $row['info']['after_paid_sms'],
+                'before_paid_email'     => $row['info']['before_paid_email'],
+                'after_paid_email'      => $row['info']['after_paid_email'],
+                'is_full'               => $row['info']['is_full'],
+                'status'                => $row['info']['status']
+            ];
+
+            $data = Events::where('source_id', $row['id'])->first();
+            if ($data) {
+              $data->update($events);
+            } else {
+              $data = Events::create($events);  
+            }
         }
-        return $data->save();
     }
 
     public function findQuestionBySlug($slug = '')

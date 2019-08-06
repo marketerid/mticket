@@ -62,7 +62,7 @@ class PaymentRepository
         if(!$data){
             return false;
         }
-        if($data AND $data->trxstatus == 'success'){
+        if($data AND $data->transaction_status == 'success'){
             // already success
             return false;
         }
