@@ -41,6 +41,52 @@ class ApiController extends Controller
         return '';
     }
 
+    public function midtransNotification(Request $request){
+        $method         = $request->getRealMethod();
+        /*Log::error("Midtrans Notif: " . json_encode([$method, $request->all()]));*/
+        if($method == 'POST'){
+            return $this->paymentNotificationMidtrans();
+        }
+        //
+        // order_id=776981683&status_code=200&transaction_status=capture
+
+        $order_id       = !empty($_GET['order_id']) ? $_GET['order_id'] : null;
+        $statusCode     = !empty($_GET['status_code']) ? $_GET['status_code'] : null;
+        $transaction    = !empty($_GET['transaction_status']) ? $_GET['transaction_status'] : null;
+
+        $paymentRepo            = new PaymentRepository();
+        $paymentData            = $paymentRepo->getMyshortcartByTransmer($order_id);
+        $order_id               = ($paymentData) ? $paymentData->com_invoice_id : 0;
+
+
+        if($transaction == 'capture') {
+            // echo "<p>Transaksi berhasil.</p>";
+
+            return redirect(url('cart/view/com-invoice/' . $order_id .'?status=' . $transaction));
+
+        }
+        // Deny
+        else if($transaction == 'deny') {
+            // echo "<p>Transaksi ditolak.</p>";
+
+            return redirect(url('cart/view/com-invoice/' . $order_id.'?status=' . $transaction));
+
+        }
+        // Challenge
+        else if($transaction == 'challenge') {
+            // echo "<p>Transaksi challenge.</p>";
+
+            return redirect(url('cart/view/com-invoice/' . $order_id.'?status=' . $transaction));
+
+        }
+        // Error
+        else {
+            // echo "<p>Terjadi kesalahan pada data transaksi yang dikirim.</p>";
+
+            return redirect(url('cart/view/com-invoice/' . $order_id.'?status=' . $transaction));
+        }
+    }
+
     public function paymentNotificationMidtrans() {
         $midtrans   = new MidtransService();
         $response   = $midtrans->notification();

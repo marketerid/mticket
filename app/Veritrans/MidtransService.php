@@ -3,6 +3,7 @@
 namespace App\Veritrans;
 
 use App\Veritrans\Midtrans;
+use App\Veritrans\Veritrans;
 use Illuminate\Support\Facades\Log;
 
 class MidtransService
@@ -16,13 +17,12 @@ class MidtransService
 
     public function notification() {
 
-        Midtrans::$isProduction    = $this->midtransProd;
-        Midtrans::$serverKey       = $this->serverKey;
+        Veritrans::$isProduction    = $this->midtransProd;
+        Veritrans::$serverKey       = $this->serverKey;
 
-        $midtrans = new Midtrans;
+        $midtrans = new Veritrans;
         $json_result = file_get_contents('php://input');
         $result = json_decode($json_result);
-
         if($result){
             $notif = $midtrans->status($result->order_id);
         }
@@ -137,12 +137,12 @@ class MidtransService
 
     public function getSnapTokens($invoice = '', $amount = 0)
     {
-        Midtrans::$isProduction = $this->midtransProd;
-        Midtrans::$serverKey = $this->serverKey;
+        Veritrans::$isProduction = $this->midtransProd;
+        Veritrans::$serverKey = $this->serverKey;
         // Midtrans::$isSanitized = true;
         // Midtrans::$is3ds = true;
 
-        $midtrans = new Midtrans;
+        $midtrans = new Veritrans;
         $complete_request = [
             "transaction_details" => [
                 "order_id"      => $invoice,
