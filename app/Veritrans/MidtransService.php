@@ -137,12 +137,12 @@ class MidtransService
 
     public function getSnapTokens($invoice = '', $amount = 0)
     {
-        Veritrans::$isProduction = $this->midtransProd;
-        Veritrans::$serverKey = $this->serverKey;
+        Midtrans::$isProduction = $this->midtransProd;
+        Midtrans::$serverKey = $this->serverKey;
         // Midtrans::$isSanitized = true;
         // Midtrans::$is3ds = true;
 
-        $midtrans = new Veritrans;
+        $midtrans = new Midtrans;
         $complete_request = [
             "transaction_details" => [
                 "order_id"      => $invoice,
