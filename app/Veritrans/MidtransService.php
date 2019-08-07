@@ -43,7 +43,7 @@ class MidtransService
                     $status = 'success';
                     return [
                         'status'    => true,
-                        'orderId'   => $order_id,
+                        'order_id'  => $order_id,
                         'type'      => $type,
                         'message'   => '',
                         'status_server' => $status,
@@ -55,7 +55,7 @@ class MidtransService
                     $status = 'success';
                     return [
                         'status'    => true,
-                        'orderId'   => $order_id,
+                        'order_id'  => $order_id,
                         'type'      => $type,
                         'message'   => '',
                         'status_server' => $status,
@@ -69,7 +69,7 @@ class MidtransService
             $status = 'success';
             return [
                 'status'    => true,
-                'orderId'   => $order_id,
+                'order_id'  => $order_id,
                 'type'      => $type,
                 'message'   => '',
                 'status_server' => $status,
@@ -81,7 +81,7 @@ class MidtransService
             $status = 'pending';
             return [
                 'status'    => false,
-                'orderId'   => $order_id,
+                'order_id'  => $order_id,
                 'type'      => $type,
                 'message'   => '',
                 'status_server' => $status,
@@ -93,7 +93,7 @@ class MidtransService
             $status = 'deny';
             return [
                 'status'    => false,
-                'orderId'   => $order_id,
+                'order_id'  => $order_id,
                 'type'      => $type,
                 'message'   => '',
                 'status_server' => $status,
@@ -105,7 +105,7 @@ class MidtransService
             $status = 'expire';
             return [
                 'status'    => false,
-                'orderId'   => $order_id,
+                'order_id'  => $order_id,
                 'type'      => $type,
                 'message'   => '',
                 'status_server' => $status,
@@ -117,7 +117,7 @@ class MidtransService
             $status = 'cancel';
             return [
                 'status'    => false,
-                'orderId'   => $order_id,
+                'order_id'  => $order_id,
                 'type'      => $type,
                 'message'   => '',
                 'status_server' => $status,
@@ -127,7 +127,7 @@ class MidtransService
 
         return [
             'status'    => false,
-            'orderId'   => $order_id,
+            'order_id'  => $order_id,
             'type'      => $type,
             'message'   => 'Not Found',
             'status_server' => $status,

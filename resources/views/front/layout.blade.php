@@ -19,41 +19,6 @@
 	<link rel="stylesheet" href="{{ url('theme/css/core.css') }}">
 	<link rel="stylesheet" href="{{ url('theme/css/style.css') }}" >
 	<link rel="stylesheet" href="{{ url('theme/css/responsive.css') }}" >
-<style>
-#body-loader {
-    position:fixed;
-    width:100%;
-    left:0;right:0;top:0;bottom:0;
-    background-color: rgba(255,255,255,0.7);
-    z-index:9999;
-    display:none;
-}
-
-@-webkit-keyframes spin {
-    from {-webkit-transform:rotate(0deg);}
-    to {-webkit-transform:rotate(360deg);}
-}
-
-@keyframes spin {
-    from {transform:rotate(0deg);}
-    to {transform:rotate(360deg);}
-}
-
-#body-loader::after {
-    content:'';
-    display:block;
-    position:absolute;
-    left:48%;top:40%;
-    width:40px;height:40px;
-    border-style:solid;
-    border-color:black;
-    border-top-color:transparent;
-    border-width: 4px;
-    border-radius:50%;
-    -webkit-animation: spin .8s linear infinite;
-    animation: spin .8s linear infinite;
-}
-</style>
 @yield('css')
 </head>
 <body>
@@ -84,7 +49,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="site-branding col-md-3">
-					<h1 class="site-title"><a href="#" title="myticket" rel="home"><img src="{{ url('assets/img/logo.png') }}" alt="logo"></a></h1>
+					<h1 class="site-title"><a href="{{ url('/') }}" title="myticket" rel="home"><img src="{{ url('assets/img/logo-white.png') }}" alt="logo"></a></h1>
 				</div>
 
 				<div class="col-md-9">
@@ -105,9 +70,9 @@
 							</button>
 					
 							<ul class="nav navbar-nav navbar-right">
-								<li class="active"><a href="{{ url('seminar') }}">Seminar (0)</a></li>
-								<li><a href="{{ url('philiphine') }}">Philiphine (0)</a></li>
-								<li><a href="{{ url('franchise') }}">Franchise (0)</a></li>
+								<li class="active"><a href="{{ url('event/seminar') }}">Seminar (0)</a></li>
+								<li><a href="{{ url('event/philiphine') }}">Philiphine (0)</a></li>
+								<li><a href="{{ url('event/franchise') }}">Franchise (0)</a></li>
 								<li class="cart"><a href="#">0</a></li>
 							</ul>
 						</div>
@@ -118,15 +83,6 @@
 	</div>
 </header><!-- #masthead -->
 
-<section class="section-artist-featured-header">
-	<div class="container">
-		<div class="section-content">
-			<h1>List of available events</h1>
-			<p>Total 22 Events</p>
-		</div>
-	</div>
-</section>
-
 @yield('content')
 
 <footer id="colophon" class="site-footer">
@@ -135,7 +91,7 @@
 			<div class="row">
 				
 				<div class="col-md-8">
-					<a href="#"><img src="theme/images/logo.png" alt="logo"></a>
+					<a href="#"><img src="{{ url('assets/img/logo-white.png') }}" alt="logo"></a>
 				</div>
 				<div class="col-md-4">
 				

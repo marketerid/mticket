@@ -10,50 +10,11 @@ class Registration extends Model
 
     public function event()
     {
-        return $this->hasMany('App\Events\Events', 'id', 'event_id');
+        return $this->belongsTo('App\Events\Events');
     }
 
-    /**
-     * Set status to Pending
-     *
-     * @return void
-     */
-    public function setPending()
+    public function payment()
     {
-        $this->attributes['status_paid'] = 'pending';
-        self::save();
-    }
- 
-    /**
-     * Set status to Success
-     *
-     * @return void
-     */
-    public function setSuccess()
-    {
-        $this->attributes['status_paid'] = 'success';
-        self::save();
-    }
- 
-    /**
-     * Set status to Failed
-     *
-     * @return void
-     */
-    public function setFailed()
-    {
-        $this->attributes['status_paid'] = 'failed';
-        self::save();
-    }
- 
-    /**
-     * Set status to Expired
-     *
-     * @return void
-     */
-    public function setExpired()
-    {
-        $this->attributes['status_paid'] = 'expired';
-        self::save();
+        return $this->hasOne('App\Payment\Payment', 'invoice_id', 'invoice');
     }
 }

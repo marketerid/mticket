@@ -11,6 +11,8 @@ Route::group(['prefix' => 'event'], function () {
 Route::post('registration', 'IndexController@registration');
 Route::get('payment', 'IndexController@payment');
 
+Route::get('find-invoice', 'IndexController@findInvoice');
+
 Route::group(['prefix' => 'backend', 'namespace' => 'Backend', 'middleware' => ["admin.not-login"]], function () {
     Route::get('login', 'Auth\LoginController@index');
     Route::post('login/authenticate', 'Auth\LoginController@authenticate');

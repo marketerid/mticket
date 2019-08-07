@@ -19,32 +19,22 @@ class IndexController extends Controller
     public function index(Request $request)
     {
         $event = $this->event->getEvent();
-        if ($request->ajax()) {
-            return view('front.load', compact('event'));
-        }
         return view('front.index', compact('event'));
     }
 
     public function allEvent(Request $request)
     {
         $event = $this->event->getEvent();
-        if ($request->ajax()) {
-            return view('front.allevent.ajax', compact('event'));
-        }
-        return view('front.allevent.index', compact('event'));
+        return view('front.allevent', compact('event'));
     }
 
     public function listevent(Request $request, $type = null)
     {
-        $event = $this->event->findType($type);
-        $type = ucfirst($type);
+        $event = $this->event->getEventByType($type);
         if (!$event->count()) {
-            return abort(404);
+            return 'no event';
         }
-        if ($request->ajax()) {
-            return view('frontend.listevent.load', compact('event'));
-        }
-        return view('frontend.listevent.index', compact('type', 'event'));
+        return view('front.listevent', compact('event'));
     }
 
     public function viewEvent($type = null, $id = null)
@@ -53,9 +43,9 @@ class IndexController extends Controller
         if (!$event) {
             return 'no event';
         } elseif ($event->type !== $type) {
-            return abort(404);
+            return 'no type';
         }
-        return view('frontend.event.index', compact('event'));
+        return view('front.viewevent', compact('event'));
     }
 
     public function registration(Request $request)
@@ -66,16 +56,35 @@ class IndexController extends Controller
             alertNotify(false, "Create Failed", $request);
             return redirect()->back();
         }
-        return redirect(url('payment' . '?inv=' . $register->invoice));
+        return redirect('payment' . '?token=' . encrypt($register->invoice));
     }
 
     public function payment(Request $request)
     {
-        $inv = $request->get('inv');
-        $payment = $this->event->findInvoice($inv);
+        $token  =  $request->get('token');
+        $invoice = null;
+
+        try{
+            $invoice    = decrypt($token);
+        }catch (\Exception $exception){
+            return 'no payment';
+        }
+
+        $payment = $this->event->findInvoice($invoice);
         if (!$payment) {
             return 'no inv';
         }
-        return view('frontend.payment.index', compact('payment'));
+        return view('front.payment', compact('payment'));
+    }
+
+    public function findInvoice(Request $request)
+    {
+        $inv = $request->get('inv');
+        return view('front.invoice');
+    }
+
+    public function resultInvoice()
+    {
+        $url = 'https://importir.com/api/find-invoice';
     }
 }

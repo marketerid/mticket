@@ -18,41 +18,6 @@
 	<link rel="stylesheet" href="{{ url('theme/css/core.css') }}">
 	<link rel="stylesheet" href="{{ url('theme/css/style.css') }}" >
 	<link rel="stylesheet" href="{{ url('theme/css/responsive.css') }}">
-<style>
-#body-loader {
-    position:fixed;
-    width:100%;
-    left:0;right:0;top:0;bottom:0;
-    background-color: rgba(255,255,255,0.7);
-    z-index:9999;
-    display:none;
-}
-
-@-webkit-keyframes spin {
-    from {-webkit-transform:rotate(0deg);}
-    to {-webkit-transform:rotate(360deg);}
-}
-
-@keyframes spin {
-    from {transform:rotate(0deg);}
-    to {transform:rotate(360deg);}
-}
-
-#body-loader::after {
-    content:'';
-    display:block;
-    position:absolute;
-    left:48%;top:40%;
-    width:40px;height:40px;
-    border-style:solid;
-    border-color:black;
-    border-top-color:transparent;
-    border-width: 4px;
-    border-radius:50%;
-    -webkit-animation: spin .8s linear infinite;
-    animation: spin .8s linear infinite;
-}
-</style>
 </head>
 <body>
 <header id="masthead" class="site-header fix-header header-3">
@@ -82,7 +47,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="site-branding col-md-3">
-					<h1 class="site-title"><a href="{{ url('/') }}" title="myticket" rel="home"><img src="{{ url('assets/img/logo.png')}}" alt="logo"></a></h1>
+					<h1 class="site-title"><a href="{{ url('/') }}" title="myticket" rel="home"><img src="{{ url('assets/img/logo-white.png')}}" alt="logo"></a></h1>
 				</div>
 
 				<div class="col-md-9">
@@ -166,89 +131,30 @@
 		</div>
 	</div>
 </section>
-
-<section class="section-search-content">
+<section class="section-calendar-events">
 	<div class="container">
 		<div class="row">
-			<div id="secondary" class="col-md-4 col-lg-3">
-				<div class="search-filter">
-					<div class="search-filter-delivery">
-						<h3>Type</h3>
-						<div class="checkbox">
-							<input id="delivery1" class="styled" type="checkbox" checked="">
-							<label for="delivery1">Seminar</label>
-						</div>
-						<div class="checkbox">
-							<input id="delivery2" class="styled" type="checkbox">
-							<label for="delivery2">Philiphine</label>
-						</div>
-						<div class="checkbox">
-							<input id="delivery3" class="styled" type="checkbox">
-							<label for="delivery3">Franchise</label>
-						</div>
-					</div>
-					<div class="search-filter-category">
-						<h3>City</h3>
-						<div class="checkbox">
-							<input id="category1" class="styled" type="checkbox" checked="">
-							<label for="category1">Jakarta</label>
-						</div>
-						<div class="checkbox">
-							<input id="category2" class="styled" type="checkbox">
-							<label for="category2">Bandung</label>
-						</div>
-						<div class="checkbox">
-							<input id="category3" class="styled" type="checkbox">
-							<label for="category3">Bogor</label>
-						</div>
-					</div>
-					<div class="search-filter-seat-features">
-						<h3>Month</h3>
-						<div class="checkbox">
-							<input id="features1" class="styled" type="checkbox" checked="">
-							<label for="features1">January</label>
-						</div>
-						<div class="checkbox">
-							<input id="features2" class="styled" type="checkbox">
-							<label for="features2">February</label>
-						</div>
-						<div class="checkbox">
-							<input id="features3" class="styled" type="checkbox">
-							<label for="features3">Maret</label>
-						</div>
-						<div class="checkbox">
-							<input id="features4" class="styled" type="checkbox">
-							<label for="features4">April</div>
-						<div class="checkbox">
-							<input id="features5" class="styled" type="checkbox">
-							<label for="features5">Mei</label>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div id="primary" class="col-md-8 col-lg-9">
-				<div class="search-result-header">
-					<div class="row">
-						<div class="col-sm-7">
-							<h2>All Sports Events at San Francisco</h2>
-							<span>Showing 1-10 of 32 Results</span>
-						</div>
-						<div class="col-sm-5">
-							<label>Sort By</label>
-							<select class="selectpicker dropdown">
-							  <option>Terdekat</option>
-							  <option>Terlama</option>
-							</select>
-						</div>
-					</div>
-				</div>
-				<div class="load">
-			      @if (count($event) > 0)
-			          @include('front.load')
-			      @else
-			          <h3 class="text-center">Tidal Ada Event</h3>
-			      @endif
-			    </div>
+			<div class="section-content">
+			  <div class="tab-content">
+			    <ul class="clearfix">
+					@foreach ($event as $e)
+					<li>
+						<a href="{{ url('event',$e->type) }}/{{ $e->id }}">
+						  <div class="date">
+						    <span class="day">{{ date('j', strtotime($e->event_date)) }}</span>
+						    <span class="month">{{ date('M', strtotime($e->event_date)) }}</span>
+						    <span class="year">{{ date('Y', strtotime($e->event_date)) }}</span>
+						  </div>
+						  <img src="{{ $e->image }}" alt="image">
+						  <div class="info">
+						    <p>{{ $e->title }} <span>{{ number_format($e->price, 0) }}</span></p>
+						    <a href="{{ url('event',$e->type) }}/{{ $e->id }}" class="get-ticket">Sign Up</a>
+						  </div>
+						</a>
+					</li>
+					@endforeach
+				</ul>
+			  </div>
 			</div>
 		</div>
 	</div>
@@ -259,7 +165,7 @@
 			<div class="row">
 				
 				<div class="col-md-8">
-					<a href="#"><img src="{{ url('theme') }}/images/logo.png" alt="logo"></a>
+					<a href="#"><img src="{{ url('assets/img/logo-white.png') }}" alt="logo"></a>
 				</div>
 				<div class="col-sm-4 col-md-4">
 				
@@ -322,34 +228,5 @@
 <script src="{{ url('theme/js/featherlight.gallery.min.js') }}"></script>
 <script src="{{ url('theme/js/bootstrap.offcanvas.min.js') }}"></script>
 <script src="{{ url('theme/js/main.js') }}"></script>
-<script>
-$(document).ready(function() {
-    $(document).on('click', '.click-pagination',function(event)
-    {
-        event.preventDefault();
-        $('#body-loader').fadeIn("slow");
-        $('.tbody').hide();
-        $('li').removeClass('active');
-        $(this).parent('li').addClass('active');
-        var page = $(this).attr('href');
-        getData(page);
-    });
-});
-
-function getData(page){
-    $.ajax(
-    {
-        url: page,
-        type: "get",
-        datatype: "html"
-    }).done(function(data){
-        $('#body-loader').hide();
-        $(".load").empty().html(data);
-    }).fail(function(jqXHR, ajaxOptions, thrownError){
-        $('#body-loader').hide();
-        $(".load").empty().html('<h3 class="text-center">Tidak Ada Data</h3>');
-    });
-}
-</script>
 </body>
 </html>

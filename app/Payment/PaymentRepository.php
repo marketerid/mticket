@@ -3,10 +3,15 @@
 namespace App\Payment;
 
 use Illuminate\Support\Facades\Auth;
-use App\Events\EventsRepository;
+use App\Events\Registration;
 
 class PaymentRepository
 {
+    public function getRegisters()
+    {
+        return Registration::with(['payment'])->get();
+    }
+    
     public function findInvoice($inv = '')
     {
         return Payment::with([])->where('invoice_id', $inv)->first();
@@ -19,14 +24,13 @@ class PaymentRepository
             return '';
         }
         $json = json_decode(json_encode($request['data']));
-        $data->transaction_id = $json->transaction_id;
-        $data->transaction_time = $json->transaction_time;
-        $data->payment_type = $json->payment_type;
-        $data->gross_amount = $json->gross_amount;
-        $data->status_message = $json->status_message;
-        $data->transaction_status = $json->transaction_status;
-        $data->fraud_status = $json->fraud_status;
-        $data->pdf_url = $json->pdf_url;
+        $data->transaction_id       = $json->transaction_id;
+        $data->transaction_time     = $json->transaction_time;
+        $data->payment_type         = $json->payment_type;
+        $data->gross_amount         = $json->gross_amount;
+        $data->transaction_status   = $json->transaction_status;
+        $data->fraud_status         = $json->fraud_status;
+        $data->dump                 = $request['data'];
         $data->save();
 
         return '';
@@ -56,9 +60,9 @@ class PaymentRepository
         return $data;
     }
 
-    public function notifyStatusMidtrans($invoiceNo, $status = 'pending')
+    public function notifyStatusMidtrans($response)
     {
-        $data       = $this->findInvoice($invoiceNo);
+        $data       = $this->findInvoice($response['order_id']);
         if(!$data){
             return false;
         }
@@ -67,7 +71,18 @@ class PaymentRepository
             return false;
         }
 
-        $data->transaction_status    = $status;
+        $dump = json_decode($response['dump']);
+
+        $data->invoice_id           = $dump->order_id;
+        $data->transaction_id       = $dump->transaction_id;
+        $data->transaction_time     = $dump->transaction_time;
+        $data->payment_type         = $dump->payment_type;
+        $data->gross_amount         = $dump->gross_amount;
+        $data->transaction_status   = $response['status_server'];
+        $data->fraud_status         = $dump->fraud_status;
+        $data->paid_by              = 'midtrans';
+        $data->dump                 = $response['dump'];
+
         $data->save();
 
         return $data;
