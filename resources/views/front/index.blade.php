@@ -139,7 +139,7 @@
 						  </div>
 						  <img src="{{ $e->image }}" alt="image">
 						  <div class="info">
-						    <p>{{ $e->title }} <span>{{ number_format($e->price, 0) }}</span></p>
+						    <p>{{ $e->title }} <span>IDR {{ number_format($e->price, 0) }}</span></p>
 						    <a href="{{ url('event',$e->type) }}/{{ $e->id }}" class="get-ticket">Sign Up</a>
 						  </div>
 						</a>

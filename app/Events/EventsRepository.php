@@ -12,6 +12,25 @@ class EventsRepository
         return Events::orderBy('id', 'desc')->get();
     }
 
+    public function getEventBySearch($inputs = [])
+    {
+        $data = Events::with([]);
+
+        if (isset($inputs['q'])) {
+            $data   = $data->where('title', 'like', '%' . $inputs['q'] . '%');
+        }
+
+        if (isset($inputs['city'])) {
+            $data   = $data->where('city', 'like', '%' . $inputs['city'] . '%');
+        }
+
+        if (isset($inputs['month'])) {
+            $data   = $data->where('event_date', 'like', '%' . $inputs['month'] . '%');
+        }
+
+        return $data->orderBy('id', 'DESC')->get();
+    }
+
     public function getEventByType($type = '')
     {
         return Events::where('type', $type)->paginate(10);

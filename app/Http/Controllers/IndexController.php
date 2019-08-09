@@ -81,7 +81,8 @@ class IndexController extends Controller
 
     public function searchEvent(Request $request)
     {
-        $event = $this->event->getEvent();
+        $inputs = $request->all();
+        $event = $this->event->getEventBySearch($inputs);
         return view('front.allevent', compact('event'));
     }
 
@@ -101,16 +102,12 @@ class IndexController extends Controller
         }
 
         if ($data['status_paid'] == 'PAID') {
-            alertNotify(false, 'Download ticket', $request);
-            return redirect('ticket/download');
+            $register = $this->event->registerByInvoice($data);
+            alertNotify(true, 'Pembayaran Lunas, Silahkan download ticket Anda', $request);
+            return redirect('payment' . '?token=' . encrypt($register->invoice));
         }
 
         $register = $this->event->registerByInvoice($data);
-
-        if (!$register) {
-            alertNotify(false, 'Search failed. Please try again', $request);
-            return redirect('search-invoice');
-        }
 
         alertNotify(true, "Invoice found successfully", $request);
         return redirect('payment' . '?token=' . encrypt($register->invoice));

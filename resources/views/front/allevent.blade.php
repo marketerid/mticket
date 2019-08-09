@@ -22,6 +22,7 @@
 					<label>City</label>
 					<select name="city" class="selectpicker dropdown">
 					  <option value="">All City</option>
+					  <option value="jakarta">Jakarta</option>
 					</select>
 				</div>
 				<div class="event-date col-sm-6 col-md-3">
@@ -53,7 +54,7 @@
 						  </div>
 						  <img src="{{ $e->image }}" alt="image">
 						  <div class="info">
-						    <p>{{ $e->title }} <span>{{ number_format($e->price, 0) }}</span></p>
+						    <p>{{ $e->title }} <span>IDR {{ number_format($e->price, 0) }}</span></p>
 						    <a href="{{ url('event',$e->type) }}/{{ $e->id }}" class="get-ticket">Sign Up</a>
 						  </div>
 						</a>
