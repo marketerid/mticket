@@ -52,14 +52,16 @@ class ApiController extends Controller
             ]);
         }
 
-
         $paymentData    = $this->payment->notifyStatusMidtrans($response);
-
         if(!$paymentData){
             return response()->json([
                 'status'    => false,
-                'message'   => "Already paid"
+                'message'   => "Already success"
             ]);
+        }
+
+        if ($response['status_server'] == 'success') {
+            $notif_org = file_get_contents("https://importir.org/api/seminar-update/".$response['order_id']."/MTICKET-MIDTRANS?token=syigdfjhagsjdf766et4wff6");
         }
 
         return response()->json($response);

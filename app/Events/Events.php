@@ -10,6 +10,6 @@ class Events extends Model
 
     public function registration()
     {
-        return $this->hasMany('App\Events\Registration', 'id', 'event_id');
+        return $this->hasMany('App\Events\Registration', 'event_id');
     }
 }

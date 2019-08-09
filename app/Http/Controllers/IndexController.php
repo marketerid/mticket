@@ -6,7 +6,6 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Events\EventsRepository;
 use App\Payment\PaymentRepository;
-use App\Veritrans\MidtransService;
 
 class IndexController extends Controller
 {
@@ -45,6 +44,7 @@ class IndexController extends Controller
         } elseif ($event->type !== $type) {
             return 'no type';
         }
+
         return view('front.viewevent', compact('event'));
     }
 
@@ -52,10 +52,12 @@ class IndexController extends Controller
     {
         $inputs = $request->all();
         $register = $this->event->registration($inputs);
+
         if (!$register) {
             alertNotify(false, "Create Failed", $request);
             return redirect()->back();
         }
+        
         return redirect('payment' . '?token=' . encrypt($register->invoice));
     }
 
@@ -77,14 +79,40 @@ class IndexController extends Controller
         return view('front.payment', compact('payment'));
     }
 
-    public function findInvoice(Request $request)
+    public function searchEvent(Request $request)
     {
-        $inv = $request->get('inv');
-        return view('front.invoice');
+        $event = $this->event->getEvent();
+        return view('front.allevent', compact('event'));
     }
 
-    public function resultInvoice()
+    public function searchInvoice(Request $request)
     {
-        $url = 'https://importir.com/api/find-invoice';
+        return view('front.search-invoice');
+    }
+
+    public function searchInvoiceCheck(Request $request)
+    {
+        $content   = file_get_contents("https://importir.com/api/search-invoice?invoice=".$request->input('invoice')."&email=".$request->input('email')."");
+        $data  = json_decode($content, true);
+
+        if (isset($data['status'])) {
+            alertNotify(false, $data['message'], $request);
+            return redirect('search-invoice');
+        }
+
+        if ($data['status_paid'] == 'PAID') {
+            alertNotify(false, 'Download ticket', $request);
+            return redirect('ticket/download');
+        }
+
+        $register = $this->event->registerByInvoice($data);
+
+        if (!$register) {
+            alertNotify(false, 'Search failed. Please try again', $request);
+            return redirect('search-invoice');
+        }
+
+        alertNotify(true, "Invoice found successfully", $request);
+        return redirect('payment' . '?token=' . encrypt($register->invoice));
     }
 }

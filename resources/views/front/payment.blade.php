@@ -8,6 +8,9 @@
 				<div class="row">
 					<div id="primary" class="col-sm-12 col-md-12">
 						<div class="section-select-payment-method">
+							@if(Session::has('status'))
+		                        <p class="alert alert-{{ Session::get('alert-class', 'info') }}">{{ Session::get('status') }}</p>
+		                    @endif
 						    <h3 class="text-center">Payment</h3>
 							<!-- Tab panes -->
 							<div class="tab-content clearfix">
@@ -21,11 +24,6 @@
 													<td>{{ $payment->invoice }}</td>
 												</tr>
 												<tr>
-													<td width="150">City</td>
-													<td width="20">:</td>
-													<td>{{ ucfirst($payment->city) }}</td>
-												</tr>
-												<tr>
 													<td width="150">Name</td>
 													<td width="20">:</td>
 													<td>{{ $payment->name }}</td>
@@ -36,9 +34,9 @@
 													<td>{{ $payment->email }}</td>
 												</tr>
 												<tr>
-													<td width="150">Date</td>
+													<td width="150">City</td>
 													<td width="20">:</td>
-													<td>{{ $payment->event->event_date }}</td>
+													<td>{{ ucfirst($payment->city) }}</td>
 												</tr>
 												<tr>
 													<td width="150">Total</td>

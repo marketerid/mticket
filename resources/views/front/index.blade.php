@@ -5,6 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="shortcut icon" href="{{ url('assets/img/icon.png') }}">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
 	<link rel="stylesheet" href="{{ url('theme/css/bootstrap.min.css') }}">
 	<link rel="stylesheet" href="{{ url('theme/css/bootstrap-select.min.css') }}">
@@ -68,8 +69,7 @@
 							<ul class="nav navbar-nav navbar-right">
 								<li><a href="{{ url('event/seminar') }}">Seminar (0)</a></li>
 								<li><a href="{{ url('event/philiphine') }}">Philiphine (0)</a></li>
-								<li><a href="{{ url('event/franchise') }}">Franchise (0)</a></li>
-								<li class="cart"><a href="#">0</a></li>
+								<li><a href="{{ url('search-invoice') }}" class="primary-link" style="background: #fff; color: #222; border: 1px solid #fff"><i class="fa fa-search"></i> Search Invoice</a></li>
 							</ul>
 						</div>
 					</nav>
@@ -98,30 +98,22 @@
 <section class="section-refine-search">
 	<div class="container">
 		<div class="row">
-			<form>
+			<form action="{{ url('search') }}" method="GET">
 				<div class="keyword col-sm-6 col-md-4">
 					<label>Search Keyword</label>
-					<input type="text" class="form-control hasclear" placeholder="Search">
+					<input type="text" name="q" class="form-control hasclear" placeholder="Search">
 					<span class="clearer"><img src="images/clear.png" alt="clear"></span>
 				</div>
 				<div class="location col-sm-6 col-md-3">
-					<label>Location</label>
-					<select class="selectpicker dropdown">
-					  <option>Select Location</option>
-					  <option>San Francisco</option>
-					  <option>Foxborough </option>
-					  <option>Buffalo</option>
-					  <option>Auburn Hills</option>
+					<label>City</label>
+					<select name="city" class="selectpicker dropdown">
+					  <option value="">All City</option>
 					</select>
 				</div>
 				<div class="event-date col-sm-6 col-md-3">
-					<label>Event Date</label>
-					<select class="selectpicker dropdown">
-					  <option>Select Date</option>
-					  <option>August 1st, 2016</option>
-					  <option>August 2nd, 2016</option>
-					  <option>August 3rd, 2016</option>
-					  <option>August 4th, 2016</option>
+					<label>Month</label>
+					<select name="month" class="selectpicker dropdown">
+					  <option value="">All Month</option>
 					</select>
 				</div>
 				<div class="col-sm-6 col-md-2">
@@ -165,7 +157,7 @@
 			<div class="row">
 				
 				<div class="col-md-8">
-					<a href="#"><img src="{{ url('assets/img/logo-white.png') }}" alt="logo"></a>
+					<a href="{{ url('/') }}"><img src="{{ url('assets/img/logo-white.png') }}" alt="logo"></a>
 				</div>
 				<div class="col-sm-4 col-md-4">
 				
@@ -206,7 +198,7 @@
 				<div class="footer-2 col-md-3">
 					<div class="footer-dashboard">
 						<ul>
-							<li><a href="#">Terms & Condition</a></li>
+							<li><a href="{{ url('terms-condition') }}">Terms & Condition</a></li>
 						</ul>
 					</div>
 				</div>
@@ -214,7 +206,6 @@
 		</div>
 	</div>
 </footer>
-<div id="body-loader"></div>
 <script src="{{ url('theme/js/jquery-3.2.0.min.js') }}"></script>
 <script src="{{ url('theme/js/bootstrap-slider.min.js') }}"></script>
 <script src="{{ url('theme/js/bootstrap-select.min.js') }}"></script>

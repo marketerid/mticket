@@ -12,30 +12,22 @@
 <section class="section-refine-search">
 	<div class="container">
 		<div class="row">
-			<form>
+			<form action="{{ url('search') }}" method="GET">
 				<div class="keyword col-sm-6 col-md-4">
 					<label>Search Keyword</label>
-					<input type="text" class="form-control hasclear" placeholder="Search">
+					<input type="text" name="q" class="form-control hasclear" placeholder="Search">
 					<span class="clearer"><img src="images/clear.png" alt="clear"></span>
 				</div>
 				<div class="location col-sm-6 col-md-3">
-					<label>Location</label>
-					<select class="selectpicker dropdown">
-					  <option>Select Location</option>
-					  <option>San Francisco</option>
-					  <option>Foxborough </option>
-					  <option>Buffalo</option>
-					  <option>Auburn Hills</option>
+					<label>City</label>
+					<select name="city" class="selectpicker dropdown">
+					  <option value="">All City</option>
 					</select>
 				</div>
 				<div class="event-date col-sm-6 col-md-3">
-					<label>Event Date</label>
-					<select class="selectpicker dropdown">
-					  <option>Select Date</option>
-					  <option>August 1st, 2016</option>
-					  <option>August 2nd, 2016</option>
-					  <option>August 3rd, 2016</option>
-					  <option>August 4th, 2016</option>
+					<label>Month</label>
+					<select name="month" class="selectpicker dropdown">
+					  <option value="">All Month</option>
 					</select>
 				</div>
 				<div class="col-sm-6 col-md-2">
@@ -45,7 +37,6 @@
 		</div>
 	</div>
 </section>
-
 <section class="section-calendar-events">
 	<div class="container">
 		<div class="row">

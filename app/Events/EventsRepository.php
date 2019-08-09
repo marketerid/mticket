@@ -154,4 +154,22 @@ class EventsRepository
     {
         return Events::findOrFail($id)->delete();
     }
+
+    public function registerByInvoice($data = [])
+    {
+        $event = Events::where('source_id', $data['schedule_id'])->first();
+        
+        $register               = new Registration();
+        $register->event_id     = $event->id;
+        $register->name         = $data['name'];
+        $register->phone        = $data['phone'];
+        $register->email        = $data['email'];
+        $register->invoice      = $data['invoice'];
+        $register->city         = $data['city'];
+        $register->total        = $data['total'];
+        $register->session      = $event->type;
+        $register->reference    = $data['reference'];
+        $register->save();
+        return $register;
+    }
 }

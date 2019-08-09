@@ -78,11 +78,11 @@ if (! function_exists('numFormat')) {
 if(! function_exists('alertNotify')){
     function alertNotify($isSuccess  = true, $message = '', $request){
         if($isSuccess){
-            $request->session()->flash('alert','success');
-            $request->session()->flash('message', $message);
+            $request->session()->flash('alert-class','success');
+            $request->session()->flash('status', $message);
         }else{
-            $request->session()->flash('alert','danger');
-            $request->session()->flash('message', $message);
+            $request->session()->flash('alert-class','danger');
+            $request->session()->flash('status', $message);
         }
     }
 }

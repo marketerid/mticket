@@ -30,6 +30,7 @@ class PaymentRepository
         $data->gross_amount         = $json->gross_amount;
         $data->transaction_status   = $json->transaction_status;
         $data->fraud_status         = $json->fraud_status;
+        $data->paid_by              = 'MIDTRANS';
         $data->dump                 = $request['data'];
         $data->save();
 
@@ -53,7 +54,7 @@ class PaymentRepository
             $data->invoice_id           = $invoice;
             $data->transaction_status   = 'requested';
             $data->transaction_time     = date("Y-m-d H:i:s");
-            $data->paid_by              = 'midtrans';
+            $data->paid_by              = 'MIDTRANS';
             $data->save();
         }
 
@@ -80,7 +81,7 @@ class PaymentRepository
         $data->gross_amount         = $dump->gross_amount;
         $data->transaction_status   = $response['status_server'];
         $data->fraud_status         = $dump->fraud_status;
-        $data->paid_by              = 'midtrans';
+        $data->paid_by              = 'MIDTRANS';
         $data->dump                 = $response['dump'];
 
         $data->save();

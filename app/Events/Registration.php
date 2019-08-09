@@ -10,7 +10,7 @@ class Registration extends Model
 
     public function event()
     {
-        return $this->belongsTo('App\Events\Events');
+        return $this->belongsTo('App\Events\Events', 'event_id');
     }
 
     public function payment()

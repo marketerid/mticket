@@ -22,38 +22,15 @@
                         </div>
                         
                         <div class="seat-details">
-                            <h3>Seats Order Information</h3>
-                            <div class="seat-details-info">                            
-                                <table class="table number-tickets">
-                                    <thead>
-                                        <tr>
-                                            <th>Delivery</th>
-                                            <th>Number of Tickets</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Tickets</td>
-                                            <td>
-                                                <div class="qty-select">
-                                                    <div class="qty-minus"> 
-                                                        <a class="qty-btn" href="#">-</a>
-                                                    </div>
-                                                    <div class="qty-input">
-                                                        <input type="text" name="total" class="quantity-input" value="1" />
-                                                    </div>
-                                                    <div class="qty-plus"> 
-                                                        <a class="qty-btn" href="#">+</a>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div class="seat-details-info">
+                                <h3>Fill Your Personal Details</h3>
                                 <input type="text" class="form-control" name="name" placeholder="Your Name" required><br>
                                 <input type="number" class="form-control" name="phone" placeholder="Phone" required><br>
-                                <input type="email" class="form-control" name="email" placeholder="Email" required>
-
+                                <input type="email" class="form-control" name="email" placeholder="Email" required><br>
+                                <select name="total" id="total" class="form-control" required>
+                                    <option value="1">1 Person</option>
+                                    <option value="2">2 Person</option>
+                                </select>
                                 <input type="hidden" name="event_id" value="{{ $event->id }}">
                                 <input type="hidden" name="reference" value="{{ request()->get('utm') ? request()->get('utm') : 'None' }}">
                                 {{ csrf_field() }}
@@ -63,7 +40,7 @@
                                     <tbody>
                                         <tr>
                                             <td>PRICE / PERSON</td>
-                                            <td class="price">IDR {{ number_format($event->price, 0) }}</td>
+                                            <td class="price">IDR <span id="sumtotal">{{ number_format($event->price, 0) }}</span></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -82,4 +59,14 @@
         </div>
     </div>
 </section>
+@endsection
+
+@section('js')
+<script>
+var price   = {{ $event->price }};
+$("#total").change(function(){
+    var qty = $(this).val();
+    $('#sumtotal').html(qty*price);
+});
+</script>
 @endsection

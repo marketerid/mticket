@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="description" content="">
+	<link rel="shortcut icon" href="{{ url('assets/img/icon.png') }}">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
 	<link rel="stylesheet" href="{{ url('theme/css/bootstrap.min.css') }}">
 	<link rel="stylesheet" href="{{ url('theme/css/bootstrap-select.min.css') }}">
@@ -55,7 +55,6 @@
 				<div class="col-md-9">
 					<nav id="site-navigation" class="navbar">
 						<div class="navbar-header">
-							<div class="mobile-cart" ><a href="#">0</a></div>
 							<button type="button" class="navbar-toggle offcanvas-toggle pull-right" data-toggle="offcanvas" data-target="#js-bootstrap-offcanvas">
 								<span class="sr-only">Toggle navigation</span>
 								<span class="icon-bar"></span>
@@ -70,10 +69,9 @@
 							</button>
 					
 							<ul class="nav navbar-nav navbar-right">
-								<li class="active"><a href="{{ url('event/seminar') }}">Seminar (0)</a></li>
+								<li><a href="{{ url('event/seminar') }}">Seminar (0)</a></li>
 								<li><a href="{{ url('event/philiphine') }}">Philiphine (0)</a></li>
-								<li><a href="{{ url('event/franchise') }}">Franchise (0)</a></li>
-								<li class="cart"><a href="#">0</a></li>
+								<li><a href="{{ url('search-invoice') }}" class="primary-link" style="background: #fff; color: #222; border: 1px solid #fff"><i class="fa fa-search"></i> Search Invoice</a></li>
 							</ul>
 						</div>
 					</nav><!-- #site-navigation -->
@@ -134,7 +132,7 @@
 			  <div class="footer-2 col-md-3">
 				 <div class="footer-dashboard">
 					<ul>
-						<li><a href="#">Terms & Condition</a></li>
+						<li><a href="{{ url('terms-condition') }}">Terms & Condition</a></li>
 					</ul>
 				  </div>
 			  </div>

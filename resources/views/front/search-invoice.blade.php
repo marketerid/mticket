@@ -1,13 +1,16 @@
 @extends('front.layout')
 
 @section('content')
-<section class="section-page-content" style="padding-top: 30px">
+<section class="section-page-content" style="padding-top: 50px">
     <div class="container">
         <div class="row">
             <div id="primary" class="col-sm-12 col-md-12">
                 <div class="section-select-payment-method">
-                    <h3 style="text-align: center;">Please Insert</h3>
-                    <form id="form-search">
+                    @if(Session::has('status'))
+                        <p class="alert alert-{{ Session::get('alert-class', 'info') }}">{{ Session::get('status') }}</p>
+                    @endif
+                    <h3 class="text-center">Please Insert invoice & email</h3>
+                    <form action="{{ url('search-invoice/check') }}" method="post" id="form-search">
                         <div class="tab-content clearfix">
                             <div class="row">
                                 <div class="col-sm-12">
@@ -19,13 +22,8 @@
                                     <input type="text" name="email" class="form-control" required>
                                 </div>
                             </div>
-                        </div>
-                        <div class="section-select-payment-method-action">
-                            <div class="row">
-                                <div class="col">
-                                    <button type="submit" class="primary-link">SUBMIT</button>
-                                </div>
-                            </div>
+                            {{ csrf_field() }}
+                            <button type="submit" class="btn btn-primary btn-lg btn-block"><i class="fa fa-search"></i> Search</button>
                         </div>
                     </form>
                 </div>
