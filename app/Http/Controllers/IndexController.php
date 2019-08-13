@@ -53,12 +53,13 @@ class IndexController extends Controller
         $inputs = $request->all();
         $register = $this->event->registration($inputs);
 
-        if (!$register) {
-            alertNotify(false, "Create Failed", $request);
-            return redirect()->back();
+        if($register != false AND $register->event_id){
+
+            // $importir = file_get_contents("https://importir.org/api/custom-seminar-register");
+            $token = $this->event->generateTokenTiketLink($register);
+
+            return redirect('payment?token=' . $token);
         }
-        
-        return redirect('payment' . '?token=' . encrypt($register->invoice));
     }
 
     public function payment(Request $request)
@@ -67,10 +68,14 @@ class IndexController extends Controller
         $invoice = null;
 
         try{
-            $invoice    = decrypt($token);
+            $token    = decrypt($token);
         }catch (\Exception $exception){
             return 'no payment';
         }
+
+        $decodeJson = json_decode($token);
+        $ip         = $decodeJson->ip;
+        $invoice    = $decodeJson->invoice;
 
         $payment = $this->event->findInvoice($invoice);
         if (!$payment) {
@@ -102,9 +107,10 @@ class IndexController extends Controller
         }
 
         if ($data['status_paid'] == 'PAID') {
-            $register = $this->event->registerByInvoice($data);
+            $register   = $this->event->registerByInvoice($data);
+            $payment     = $this->event->registerPaidUser($data);
             alertNotify(true, 'Pembayaran Lunas, Silahkan download ticket Anda', $request);
-            return redirect('payment' . '?token=' . encrypt($register->invoice));
+            return redirect('payment?token=' . $payment);
         }
 
         $register = $this->event->registerByInvoice($data);

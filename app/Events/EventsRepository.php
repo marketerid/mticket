@@ -4,6 +4,8 @@ namespace App\Events;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use App\Events\Registration;
+use App\Payment\Payment;
 
 class EventsRepository
 {
@@ -190,5 +192,31 @@ class EventsRepository
         $register->reference    = $data['reference'];
         $register->save();
         return $register;
+    }
+
+    public function registerPaidUser($data = [])
+    {
+        $payment                       = new Payment();
+        $payment->invoice_id           = $data['invoice'];
+        $payment->transaction_time     = date("Y-m-d H:i:s");
+        $payment->payment_type         = 'Paid from ORG';
+        $payment->gross_amount         = $data['total'];
+        $payment->transaction_status   = 'success';
+        $payment->fraud_status         = 'accept';
+        $payment->paid_by              = 'ORG';
+        $payment->save();
+
+        return $this->generateTokenTiketLink($data);
+    }
+
+    public function generateTokenTiketLink($register){
+        if(!$register){
+            return '';
+        }
+        $result = [
+            'ip'            => '',
+            'invoice'       => $register['invoice']
+        ];
+        return encrypt(json_encode($result));
     }
 }

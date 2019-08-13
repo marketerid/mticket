@@ -65,6 +65,7 @@
 										@elseif ($payment->payment->transaction_status != 'success')
 											<button type="button" id="pay-button" class="btn btn-success">Pay Now</button>
 										@endif
+										<a href="https://importir.org/tiket-download?token={{ request()->get('token') }}" class="btn btn-primary" target="_blank">Download Ticket</a>
 									</div>
 								</div>
 								
