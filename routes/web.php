@@ -8,8 +8,10 @@ Route::group(['prefix' => 'event'], function () {
     Route::get('{event?}/{id?}', 'IndexController@viewEvent');
 });
 
-Route::post('registration', 'IndexController@registration');
-Route::get('payment', 'IndexController@payment');
+Route::post('registration', 'RegistrationController@store');
+Route::get('payment', 'RegistrationController@payment');
+
+Route::get('tiket-download','RegistrationController@tiketDownload');
 
 Route::get('search', 'IndexController@searchEvent');
 
@@ -41,7 +43,7 @@ Route::any('search-invoice/check', 'IndexController@searchInvoiceCheck');
 
 
 Route::get('terms-condition', function(){
-    return view('front.terms');
+    return view('frontend.pages.terms');
 });
 
 

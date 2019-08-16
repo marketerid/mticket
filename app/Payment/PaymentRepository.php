@@ -83,7 +83,6 @@ class PaymentRepository
         $data->fraud_status         = $dump->fraud_status;
         $data->paid_by              = 'MIDTRANS';
         $data->dump                 = $response['dump'];
-
         $data->save();
 
         return $data;

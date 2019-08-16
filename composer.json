@@ -10,12 +10,16 @@
         "barryvdh/laravel-debugbar": "^2.4",
         "cartalyst/sentinel": "2.0.*",
         "drewm/mailchimp-api": "^2.5",
+        "fedeisas/laravel-mail-css-inliner": "^2.1",
         "giggsey/libphonenumber-for-php": "^8.9",
         "google/apiclient": "^2.0",
+        "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4.0",
         "mailjet/mailjet-apiv3-php": "^1.4",
+        "mews/captcha": "^2.1",
+        "milon/barcode": "^5.3",
         "mpdf/mpdf": "^7.1"
     },
     "require-dev": {

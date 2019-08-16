@@ -1,96 +1,160 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>@yield('title','Mticket.asia')</title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
-  <link rel="shortcut icon" href="{{ url('assets/img/icon.png') }}">
-  <link rel="stylesheet" href="{{ url('assets/css/style.min.css') }}">
-  <link rel="stylesheet" href="{{ url('assets/css/bootstrap.min.css') }}">
-  <link rel="stylesheet" href="{{ url('assets/css/font-awesome.min.css') }}">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
-<style>
-.masthead {
-  height: 100vh;
-  min-height: 500px;
-  background-image: url('https://www.startupdelta.org/wp-content/uploads/2018/06/founder-stage-3.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-</style>
+	<title>Mticket.asia</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="shortcut icon" href="{{ url('assets/img/icon.png') }}">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700">
+	<link rel="stylesheet" href="{{ url('theme/css/bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{ url('theme/css/bootstrap-select.min.css') }}">
+	<link rel="stylesheet" href="{{ url('theme/css/bootstrap-slider.min.css') }}">
+	<link rel="stylesheet" href="{{ url('theme/css/jquery.scrolling-tabs.min.css') }}">
+	<link rel="stylesheet" href="{{ url('theme/css/bootstrap-checkbox.css') }}">
+	<link rel="stylesheet" href="{{ url('theme/css/flexslider.css') }}">
+	<link rel="stylesheet" href="{{ url('theme/css/featherlight.min.css') }}">
+	<link rel="stylesheet" href="{{ url('theme/css/font-awesome.min.css') }}">
+	<link rel="stylesheet" href="{{ url('theme/css/bootstrap.offcanvas.min.css') }}">
+	<link rel="stylesheet" href="{{ url('theme/css/core.css') }}">
+	<link rel="stylesheet" href="{{ url('theme/css/style.css') }}" >
+	<link rel="stylesheet" href="{{ url('theme/css/responsive.css') }}" >
 @yield('css')
 </head>
-<body class="bg-light">
-<section>
-  <nav class="navbar navbar-light bg-white navbar-expand-lg border-bottom fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="{{ url('/') }}">
-        <img src="{{ url('assets/img/logo.png') }}">
-      </a>
-      <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#menu" aria-expanded="false">
-          <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="navbar-collapse collapse" id="menu">
-        <ul class="navbar-nav ml-auto text-center">
-          <li class="nav-item">
-              <a href="{{ url('event/seminar') }}" class="nav-link text-dark">Seminar <span class="badge badge-pill badge-warning">15</span></a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ url('event/exhibition') }}" class="nav-link text-dark">Philiphine <span class="badge badge-pill badge-warning">3</span></a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ url('event/workshop') }}" class="nav-link text-dark">Franchise <span class="badge badge-pill badge-warning">1</span></a>
-          </li>
-          <li class="nav-item mb-1 ml-md-3">
-            <a href="{{ url('contact-us') }}" class="btn btn-primary"><i class="fa fa-phone"></i> Contact Us</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-</section>
-<section>
+<body>
+<header id="masthead" class="site-header">
+	<div class="top-header top-header-bg">
+		<div class="container">
+			<div class="row">
+				<div class="top-left">
+					<ul>
+						<li>
+							<a href="tel:02122302193">
+								<i class="fa fa-phone"></i>
+								021 22302193
+							</a>
+						</li>
+						<li>
+							<a href="mailto:hello@myticket.com"> 
+								<i class="fa fa-envelope-o"></i>
+								info@mticket.asia
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="main-header main-header-bg">
+		<div class="container">
+			<div class="row">
+				<div class="site-branding col-md-3">
+					<h1 class="site-title"><a href="{{ url('/') }}" title="myticket" rel="home"><img src="{{ url('assets/img/logo-white.png') }}" alt="logo"></a></h1>
+				</div>
+
+				<div class="col-md-9">
+					<nav id="site-navigation" class="navbar">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle offcanvas-toggle pull-right" data-toggle="offcanvas" data-target="#js-bootstrap-offcanvas">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+						</div>
+
+						<div class="navbar-offcanvas navbar-offcanvas-touch navbar-offcanvas-right" id="js-bootstrap-offcanvas">
+							<button type="button" class="offcanvas-toggle closecanvas" data-toggle="offcanvas" data-target="#js-bootstrap-offcanvas">
+							   <i class="fa fa-times fa-2x" aria-hidden="true"></i>
+							</button>
+					
+							<ul class="nav navbar-nav navbar-right">
+								<li><a href="{{ url('event/seminar') }}">Seminar (0)</a></li>
+								<li><a href="{{ url('event/philiphine') }}">Philiphine (0)</a></li>
+								<li><a href="{{ url('search-invoice') }}" class="primary-link" style="background: #fff; color: #222; border: 1px solid #fff"><i class="fa fa-search"></i> Search Invoice</a></li>
+							</ul>
+						</div>
+					</nav><!-- #site-navigation -->
+				</div>
+			</div>
+		</div>
+	</div>
+</header><!-- #masthead -->
+
 @yield('content')
-</section>
-<footer class="sticky-footer" style="background-color: #1a237e;">
-  <div class="container my-auto">
-    <div class="row mt-3 mb-5">
-      <div class="col-md-3">
-        <h5 class="text-warning">Address</h5>
-        <p class="text-white">Green Lake City Ruko Crown Block D no 17, Petir, Cipondoh, Kota Tangerang, 15147</p>
-      </div>
-      <div class="col-md-3">
-        <h5 class="text-warning">Contacts</h5>
-        <p class="text-white">
-          <a href="mailto:info@mticket.asia" class="text-white">Email: info@mticket.asia</a><br>
-          <a href="tel:02122302193" class="text-white">Phone: 021-22302193</a>
-        </p>
-      </div>
-      <div class="col-md-3">
-        <h5 class="text-warning">Others</h5>
-        <p class="text-white">
-          <a href="Terms and Conditions" class="text-white">Terms and Conditions</a><br>
-          <a href="Refund Policy" class="text-white">Refund Policy</a>
-        </p>
-      </div>
-      <div class="col-md-3">
-        <h5 class="text-warning">Social Media</h5>
-        <a href="https://facebook.com" class="btn btn-warning btn-circle text-dark"><i class="fab fa-facebook-f"></i></a>
-        <a href="https://instagram.com" class="btn btn-warning btn-circle text-dark"><i class="fab fa-instagram"></i></a>
-        <a href="https://youtube.com" class="btn btn-warning btn-circle text-dark"><i class="fab fa-youtube"></i></a>
-      </div>
-    </div>
-    <div class="copyright text-center my-auto border-top text-white pt-4">
-      <span>Copyright &copy; Mticket.asia 2019</span>
-    </div>
-  </div>
-</footer>
+
+<footer id="colophon" class="site-footer">
+	<div class="top-footer">
+		<div class="container">
+			<div class="row">
+				
+				<div class="col-md-8">
+					<a href="#"><img src="{{ url('assets/img/logo-white.png') }}" alt="logo"></a>
+				</div>
+				<div class="col-md-4">
+				
+				<p>&copy; 2016 MTICKET.ASIA ALL RIGHTS RESEVED</p>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	
+	<div class="main-footer">
+		<div class="container">
+			<div class="row">
+			  <div class="footer-1 col-md-9">
+				  <div class="social clearfix">
+					<h3>Stay Connected</h3>
+					<ul>
+						<li class="facebook">
+							<a href="#">
+								<i class="fa fa-facebook" aria-hidden="true"></i>
+								Facebook
+							</a>
+						</li>
+						<li class="linkedin">
+							<a href="#">
+								<i class="fa fa-instagram" aria-hidden="true"></i>
+								Instagram
+							</a>
+						</li>
+						<li class="google">
+							<a href="#">
+								<i class="fa fa-youtube" aria-hidden="true"></i>
+									Youtube
+								</a>
+						</li>
+					</ul>
+				  </div>
+				</div>
+
+			  <div class="footer-2 col-md-3">
+				 <div class="footer-dashboard">
+					<ul>
+						<li><a href="{{ url('terms-condition') }}">Terms & Condition</a></li>
+					</ul>
+				  </div>
+			  </div>
+
+			</div>
+		</div>
+	</div>
+</footer><!-- #colophon -->
 <div id="body-loader"></div>
-<script src="{{ url('assets/js/jquery.min.js') }}"></script>
-<script src="{{ url('assets/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ url('theme/js/jquery-3.2.0.min.js') }}"></script>
+<script src="{{ url('theme/js/bootstrap-slider.min.js') }}"></script>
+<script src="{{ url('theme/js/bootstrap-select.min.js') }}"></script>
+<script src="{{ url('theme/js/jquery.scrolling-tabs.min.js') }}"></script>
+<script src="{{ url('theme/js/jquery.countdown.min.js') }}"></script>
+<script src="{{ url('theme/js/jquery.flexslider-min.js') }}"></script>
+<script src="{{ url('theme/js/jquery.imagemapster.min.js') }}"></script>
+<script src="{{ url('theme/js/tooltip.js') }}"></script>
+<script src="{{ url('theme/js/bootstrap.min.js') }}"></script>
+<script src="{{ url('theme/js/featherlight.min.js') }}"></script>
+<script src="{{ url('theme/js/featherlight.gallery.min.js') }}"></script>
+<script src="{{ url('theme/js/bootstrap.offcanvas.min.js') }}"></script>
+<script src="{{ url('theme/js/main.js') }}"></script>
 @yield('js')
 </body>
 </html>

@@ -18,22 +18,22 @@ class IndexController extends Controller
     public function index(Request $request)
     {
         $event = $this->event->getEvent();
-        return view('front.index', compact('event'));
+        return view('frontend.index', compact('event'));
     }
 
     public function allEvent(Request $request)
     {
         $event = $this->event->getEvent();
-        return view('front.allevent', compact('event'));
+        return view('frontend.allevent.index', compact('event'));
     }
 
     public function listevent(Request $request, $type = null)
     {
         $event = $this->event->getEventByType($type);
         if (!$event->count()) {
-            return 'no event';
+            abort(404);
         }
-        return view('front.listevent', compact('event'));
+        return view('frontend.listevent.index', compact('event'));
     }
 
     public function viewEvent($type = null, $id = null)
@@ -45,55 +45,19 @@ class IndexController extends Controller
             return 'no type';
         }
 
-        return view('front.viewevent', compact('event'));
-    }
-
-    public function registration(Request $request)
-    {
-        $inputs = $request->all();
-        $register = $this->event->registration($inputs);
-
-        if($register != false AND $register->event_id){
-
-            // $importir = file_get_contents("https://importir.org/api/custom-seminar-register");
-            $token = $this->event->generateTokenTiketLink($register);
-
-            return redirect('payment?token=' . $token);
-        }
-    }
-
-    public function payment(Request $request)
-    {
-        $token  =  $request->get('token');
-        $invoice = null;
-
-        try{
-            $token    = decrypt($token);
-        }catch (\Exception $exception){
-            return 'no payment';
-        }
-
-        $decodeJson = json_decode($token);
-        $ip         = $decodeJson->ip;
-        $invoice    = $decodeJson->invoice;
-
-        $payment = $this->event->findInvoice($invoice);
-        if (!$payment) {
-            return 'no inv';
-        }
-        return view('front.payment', compact('payment'));
+        return view('frontend.viewevent.index', compact('event'));
     }
 
     public function searchEvent(Request $request)
     {
         $inputs = $request->all();
         $event = $this->event->getEventBySearch($inputs);
-        return view('front.allevent', compact('event'));
+        return view('frontend.allevent.index', compact('event'));
     }
 
     public function searchInvoice(Request $request)
     {
-        return view('front.search-invoice');
+        return view('frontend.invoice.search');
     }
 
     public function searchInvoiceCheck(Request $request)
@@ -107,15 +71,14 @@ class IndexController extends Controller
         }
 
         if ($data['status_paid'] == 'PAID') {
-            $register   = $this->event->registerByInvoice($data);
-            $payment     = $this->event->registerPaidUser($data);
+            $register   = $this->event->registerByInvoice($data, $data['status_paid']);
             alertNotify(true, 'Pembayaran Lunas, Silahkan download ticket Anda', $request);
-            return redirect('payment?token=' . $payment);
+            return redirect('payment?token=' . $register);
         }
 
-        $register = $this->event->registerByInvoice($data);
+        $register = $this->event->registerByInvoice($data, 'PENDING');
 
         alertNotify(true, "Invoice found successfully", $request);
-        return redirect('payment' . '?token=' . encrypt($register->invoice));
+        return redirect('payment' . '?token=' . $register);
     }
 }
