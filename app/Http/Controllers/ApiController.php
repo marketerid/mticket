@@ -62,7 +62,7 @@ class ApiController extends Controller
 
         if ($response['status_server'] == 'success') {
             $this->event->updateStatusRegister($response, 'PAID');
-            $notif_org = file_get_contents("https://importir.org/api/seminar-update/".$response['order_id']."/MTICKET-MIDTRANS?token=syigdfjhagsjdf766et4wff6");
+            // $notif_org = file_get_contents("https://importir.org/api/seminar-update/".$response['order_id']."/MTICKET-MIDTRANS?token=syigdfjhagsjdf766et4wff6");
         }
 
         return response()->json($response);

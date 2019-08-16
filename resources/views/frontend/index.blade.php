@@ -19,6 +19,16 @@
 	<link rel="stylesheet" href="{{ url('theme/css/core.css') }}">
 	<link rel="stylesheet" href="{{ url('theme/css/style.css') }}" >
 	<link rel="stylesheet" href="{{ url('theme/css/responsive.css') }}">
+<style>
+.section-calendar-events .section-content .tab-content ul li {
+    width: 30.333%;
+    float: left;
+    position: relative;
+    height: 235px;
+    position: relative;
+    margin: 10px;
+}
+</style>
 </head>
 <body>
 <header id="masthead" class="site-header fix-header header-3">
@@ -67,8 +77,8 @@
 							</button>
 							
 							<ul class="nav navbar-nav navbar-right">
-								<li><a href="{{ url('event/seminar') }}">Seminar (0)</a></li>
-								<li><a href="{{ url('event/philiphine') }}">Philiphine (0)</a></li>
+								<li><a href="{{ url('event') }}">Seminar</a></li>
+								<li><a href="{{ url('event/philiphine') }}">Philiphine</a></li>
 								<li><a href="{{ url('search-invoice') }}" class="primary-link" style="background: #fff; color: #222; border: 1px solid #fff"><i class="fa fa-search"></i> Search Invoice</a></li>
 							</ul>
 						</div>
@@ -99,21 +109,17 @@
 	<div class="container">
 		<div class="row">
 			<form action="{{ url('search') }}" method="GET">
-				<div class="keyword col-sm-6 col-md-4">
+				<div class="keyword col-sm-6 col-md-6">
 					<label>Search Keyword</label>
 					<input type="text" name="q" class="form-control hasclear" placeholder="Search">
 					<span class="clearer"><img src="images/clear.png" alt="clear"></span>
 				</div>
-				<div class="location col-sm-6 col-md-3">
+				<div class="location col-sm-6 col-md-4">
 					<label>City</label>
-					<select name="city" class="selectpicker dropdown">
-					  <option value="">All City</option>
-					</select>
-				</div>
-				<div class="event-date col-sm-6 col-md-3">
-					<label>Month</label>
-					<select name="month" class="selectpicker dropdown">
-					  <option value="">All Month</option>
+					<select name="city_id" class="selectpicker dropdown">
+						@foreach ($city as $c)
+						  <option value="{{ $c['source_id'] }}">{{ $c['city'] }}</option>
+						@endforeach
 					</select>
 				</div>
 				<div class="col-sm-6 col-md-2">

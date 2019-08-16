@@ -36,11 +36,7 @@ class EventsRepository
         }
 
         if (isset($inputs['city'])) {
-            $data   = $data->where('city', 'like', '%' . $inputs['city'] . '%');
-        }
-
-        if (isset($inputs['month'])) {
-            $data   = $data->where('event_date', 'like', '%' . $inputs['month'] . '%');
+            $data   = $data->where('source_id', $inputs['city_id']);
         }
 
         return $data->orderBy('id', 'DESC')->get();
@@ -79,6 +75,9 @@ class EventsRepository
     {
         $register               = new Registration();
         $event                  = $this->getScheduleByIdAndStatus($inputs['event_id'], 1);
+        if(!$event){
+            return false;
+        }
 
         $lastInvoice            = $register->orderBy('id', 'desc')->pluck('id')->first();
         $newInvoice             = $lastInvoice + 1;
@@ -104,7 +103,37 @@ class EventsRepository
         $message                = $this->replaceDynamicVarEmail($message, $user, $user->total, $register->lang);
         $sms->sendSMS($user->phone, $user->city, $message, $user->lang);
 
-        // @file_get_contents("https://importir.org/api/custom-seminar-register?name=".$inputs['name']."&email=".$inputs['email']."&phone=".$inputs['phone']."&total=".$inputs['total']."&schedule_id=".$inputs['event_id']."&reference=".$inputs['reference']."&session=event");
+        @file_get_contents("https://importir.org/api/custom-seminar-register?name=".$inputs['name']."&email=".$inputs['email']."&phone=".$inputs['phone']."&total=".$inputs['total']."&schedule_id=".$inputs['event_id']."&reference=".$inputs['reference']."&session=event");
+
+        return $user;
+    }
+
+    public function registerByInvoice($data = [], $status)
+    {
+        $register               = new Registration();
+        $event                  = $this->getScheduleByIdAndStatus($data['schedule_id'], 1);
+        if(!$event){
+            return false;
+        }
+
+        $register->event_id     = $data['schedule_id'];
+        $register->name         = $data['name'];
+        $register->phone        = $data['phone'];
+        $register->email        = $data['email'];
+        $register->invoice      = $data['invoice'];
+        $register->city         = $data['city'];
+        $register->total        = $data['total'];
+        $register->session      = isset($event->type) ? $event->type : 1;
+        $register->reference    = $data['reference'];
+        $register->status       = $status;
+        $register->save();
+
+        $user                   = $this->findRegister($register->id);
+
+        $sms                    = new GoSMSService();
+        $message                = $user->event->before_paid_sms;
+        $message                = $this->replaceDynamicVarEmail($message, $user, $user->total, $register->lang);
+        $sms->sendSMS($user->phone, $user->city, $message, $user->lang);
 
         return $user;
     }
@@ -126,26 +155,6 @@ class EventsRepository
         ];
 
         return encrypt(json_encode($result));
-    }
-
-    public function registerByInvoice($data = [], $status)
-    {
-        $event = Events::where('source_id', $data['schedule_id'])->first();
-        
-        $register               = new Registration();
-        $register->event_id     = $data['schedule_id'];
-        $register->name         = $data['name'];
-        $register->phone        = $data['phone'];
-        $register->email        = $data['email'];
-        $register->invoice      = $data['invoice'];
-        $register->city         = $data['city'];
-        $register->total        = $data['total'];
-        $register->session      = $event->type;
-        $register->reference    = $data['reference'];
-        $register->status       = $status;
-        $register->save();
-
-        return $this->generateTokenTiket($data['invoice']);
     }
 
     public function getTiket($token)
@@ -191,6 +200,7 @@ class EventsRepository
         $token   = $this->generateTokenTiket($user->invoice);
         $message = str_replace("{{NAMA}}", $user->name, $message);
         $message = str_replace("{{PHONE}}", $user->phone, $message);
+        $message = str_replace("{{TITLE}}", $user->event->title, $message);
         $message = str_replace("{{DESKRIPSI}}", $user->event->description, $message);
         $message = str_replace("{{EMAIL}}", $user->email, $message);
         $message = str_replace("{{TIPE}}", $user->event->type, $message);
@@ -357,5 +367,15 @@ class EventsRepository
     public function eventDelete($id = null)
     {
         return Events::findOrFail($id)->delete();
+    }
+
+    public function getCity()
+    {
+        return Events::select('source_id', 'city')->where('status', 1)->get();
+    }
+
+    public function updateStatusRegister($response, $status)
+    {
+        return Registration::where('invoice', $response['order_id'])->update(['payment' => $response['type'], 'status' => $status]);
     }
 }

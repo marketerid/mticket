@@ -13,22 +13,17 @@
 	<div class="container">
 		<div class="row">
 			<form action="{{ url('search') }}" method="GET">
-				<div class="keyword col-sm-6 col-md-4">
+				<div class="keyword col-sm-6 col-md-6">
 					<label>Search Keyword</label>
 					<input type="text" name="q" class="form-control hasclear" placeholder="Search">
 					<span class="clearer"><img src="images/clear.png" alt="clear"></span>
 				</div>
-				<div class="location col-sm-6 col-md-3">
+				<div class="location col-sm-6 col-md-4">
 					<label>City</label>
-					<select name="city" class="selectpicker dropdown">
-					  <option value="">All City</option>
-					  <option value="jakarta">Jakarta</option>
-					</select>
-				</div>
-				<div class="event-date col-sm-6 col-md-3">
-					<label>Month</label>
-					<select name="month" class="selectpicker dropdown">
-					  <option value="">All Month</option>
+					<select name="city_id" class="selectpicker dropdown">
+						@foreach ($city as $c)
+						  <option value="{{ $c['source_id'] }}">{{ $c['city'] }}</option>
+						@endforeach
 					</select>
 				</div>
 				<div class="col-sm-6 col-md-2">

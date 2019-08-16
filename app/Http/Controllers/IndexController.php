@@ -18,22 +18,25 @@ class IndexController extends Controller
     public function index(Request $request)
     {
         $event = $this->event->getEvent();
-        return view('frontend.index', compact('event'));
+        $city  = $this->event->getCity();
+        return view('frontend.index', compact('event', 'city'));
     }
 
     public function allEvent(Request $request)
     {
         $event = $this->event->getEvent();
-        return view('frontend.allevent.index', compact('event'));
+        $city  = $this->event->getCity();
+        return view('frontend.allevent.index', compact('event', 'city'));
     }
 
     public function listevent(Request $request, $type = null)
     {
         $event = $this->event->getEventByType($type);
+        $city  = $this->event->getCity();
         if (!$event->count()) {
             abort(404);
         }
-        return view('frontend.listevent.index', compact('event'));
+        return view('frontend.listevent.index', compact('event', 'city'));
     }
 
     public function viewEvent($type = null, $id = null)
@@ -52,7 +55,8 @@ class IndexController extends Controller
     {
         $inputs = $request->all();
         $event = $this->event->getEventBySearch($inputs);
-        return view('frontend.allevent.index', compact('event'));
+        $city  = $this->event->getCity();
+        return view('frontend.allevent.index', compact('event', 'city'));
     }
 
     public function searchInvoice(Request $request)
@@ -76,9 +80,14 @@ class IndexController extends Controller
             return redirect('payment?token=' . $register);
         }
 
-        $register = $this->event->registerByInvoice($data, 'PENDING');
+        $total          = isset($inputs['total']) ? $inputs['total'] : 1;
+        $register       = $this->event->registerByInvoice($data, 'PENDING');
+        $message        = $register->event->before_paid_email;
+        $message        = $this->event->replaceDynamicVarEmail($message, $register, $total);
+        $result         = $this->event->mailRegisterSeminar($register, $message);
+        $token          = $this->event->generateTokenTiket($register->invoice);
 
         alertNotify(true, "Invoice found successfully", $request);
-        return redirect('payment' . '?token=' . $register);
+        return redirect('payment' . '?token=' . $token);
     }
 }

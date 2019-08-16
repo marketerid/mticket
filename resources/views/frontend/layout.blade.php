@@ -19,6 +19,16 @@
 	<link rel="stylesheet" href="{{ url('theme/css/core.css') }}">
 	<link rel="stylesheet" href="{{ url('theme/css/style.css') }}" >
 	<link rel="stylesheet" href="{{ url('theme/css/responsive.css') }}" >
+<style>
+.section-calendar-events .section-content .tab-content ul li {
+    width: 30.333%;
+    float: left;
+    position: relative;
+    height: 235px;
+    position: relative;
+    margin: 10px;
+}
+</style>
 @yield('css')
 </head>
 <body>
@@ -69,8 +79,8 @@
 							</button>
 					
 							<ul class="nav navbar-nav navbar-right">
-								<li><a href="{{ url('event/seminar') }}">Seminar (0)</a></li>
-								<li><a href="{{ url('event/philiphine') }}">Philiphine (0)</a></li>
+								<li><a href="{{ url('event') }}">Seminar</a></li>
+								<li><a href="{{ url('event/philiphine') }}">Philiphine</a></li>
 								<li><a href="{{ url('search-invoice') }}" class="primary-link" style="background: #fff; color: #222; border: 1px solid #fff"><i class="fa fa-search"></i> Search Invoice</a></li>
 							</ul>
 						</div>
