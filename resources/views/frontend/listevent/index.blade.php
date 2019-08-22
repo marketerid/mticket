@@ -5,7 +5,6 @@
 	<div class="container">
 		<div class="section-content">
 			<h1>List of available events</h1>
-			<p>Total 22 Events</p>
 		</div>
 	</div>
 </section>

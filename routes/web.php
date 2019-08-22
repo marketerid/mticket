@@ -8,15 +8,15 @@ Route::group(['prefix' => 'event'], function () {
     Route::get('{event?}/{id?}', 'IndexController@viewEvent');
 });
 
-Route::post('registration', 'RegistrationController@store');
-Route::get('payment', 'RegistrationController@payment');
-
-Route::get('tiket-download','RegistrationController@tiketDownload');
-
 Route::get('search', 'IndexController@searchEvent');
 
 Route::get('search-invoice', 'IndexController@searchInvoice');
 Route::any('search-invoice/check', 'IndexController@searchInvoiceCheck');
+
+Route::post('registration', 'RegistrationController@index');
+Route::get('payment', 'RegistrationController@payment');
+
+Route::get('tiket-download','RegistrationController@tiketDownload');
 
 
 

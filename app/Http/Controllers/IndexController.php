@@ -73,21 +73,21 @@ class IndexController extends Controller
             alertNotify(false, $data['message'], $request);
             return redirect('search-invoice');
         }
+        if ($data['total'] < 109000) {
+            $total = 1;
+        } else {
+            $total = 2;
+        }
+        $register   = $this->event->registerByInvoice($data, $data['status_paid']);
+        // return response()->json($register);die();
+        $result     = $this->event->mailRegisterSeminar($register, $total);
+        $token      = $this->event->generateTokenTiket($register->invoice);
 
         if ($data['status_paid'] == 'PAID') {
-            $register   = $this->event->registerByInvoice($data, $data['status_paid']);
             alertNotify(true, 'Pembayaran Lunas, Silahkan download ticket Anda', $request);
-            return redirect('payment?token=' . $register);
+            return redirect('payment?token=' . $token);
         }
-
-        $total          = isset($inputs['total']) ? $inputs['total'] : 1;
-        $register       = $this->event->registerByInvoice($data, 'PENDING');
-        $message        = $register->event->before_paid_email;
-        $message        = $this->event->replaceDynamicVarEmail($message, $register, $total);
-        $result         = $this->event->mailRegisterSeminar($register, $message);
-        $token          = $this->event->generateTokenTiket($register->invoice);
-
         alertNotify(true, "Invoice found successfully", $request);
-        return redirect('payment' . '?token=' . $token);
+        return redirect('payment?token=' . $token);
     }
 }

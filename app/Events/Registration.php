@@ -21,4 +21,28 @@ class Registration extends Model
 
         return $imageLink;
     }
+
+    public function getPaymentLinkAttribute(){
+        $result = [
+            'ip'            => '',
+            'invoice'       => $this->invoice
+        ];
+        $link = url('payment/?token=' . encrypt(json_encode($result)));
+
+        return $link;
+    }
+
+    public function getTiketDownloadAttribute(){
+        $inv = substr($this->invoice, 0, 3);
+        $result = [
+            'ip'            => '',
+            'invoice'       => $this->invoice
+        ];
+        if ($inv !== 'RGS') {
+            $link = url('tiket-download/?token=' . encrypt(json_encode($result)));
+        }
+        $link = 'https://importir.org/tiket-download?token=' . encrypt(json_encode($result));
+
+        return $link;
+    }
 }

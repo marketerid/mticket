@@ -68,13 +68,28 @@ class ApiController extends Controller
         return response()->json($response);
     }
 
-    public function getEvents() {
+    public function getSeminar() {
         $data = file_get_contents("https://importir.com/api/seminar-json?key=faizalganteng");
         $array = json_decode($data, true);
         if ($array) {
-            $this->event->getEvents($array);
+            $this->event->insertSeminar($array);
         }
         
+        $json['message'] = 'success';
+        return response()->json($json);
+    }
+
+    public function changeStatusEvent() {
+        $events = $this->event->getEvent();
+        foreach ($events as $event) {
+            $events = $event->event_date;
+            if (strtotime($event->event_date) >= time()) {
+                $status = 1;
+            } else {
+                $status = 0;
+            }
+            $this->event->changeStatusEvent($event->id, $status);
+        }
         $json['message'] = 'success';
         return response()->json($json);
     }

@@ -57,7 +57,7 @@
                                         <p>
                                             Phone: <strong>(021) 22302193 </strong>
                                             <br/>
-                                            Email: <strong><a href="mailto:sales@importir.org">info@mticket.asia</a></strong>
+                                            Email: <strong><a href="mailto:info@mticket.asia">info@mticket.asia</a></strong>
                                         </p>
                                         <p>
                                             Green Lake City Ruko Crown Block C no 32,

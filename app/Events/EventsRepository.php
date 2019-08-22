@@ -24,7 +24,7 @@ class EventsRepository
 
     public function findEvent($id = null)
     {
-        return Events::find($id);
+        return Events::with([])->where('source_id', $id);
     }
 
     public function getEventBySearch($inputs = [])
@@ -35,7 +35,7 @@ class EventsRepository
             $data   = $data->where('title', 'like', '%' . $inputs['q'] . '%');
         }
 
-        if (isset($inputs['city'])) {
+        if (isset($inputs['city_id'])) {
             $data   = $data->where('source_id', $inputs['city_id']);
         }
 
@@ -99,11 +99,25 @@ class EventsRepository
         $user                   = $this->findRegister($register->id);
 
         $sms                    = new GoSMSService();
-        $message                = $user->event->before_paid_sms;
-        $message                = $this->replaceDynamicVarEmail($message, $user, $user->total, $register->lang);
-        $sms->sendSMS($user->phone, $user->city, $message, $user->lang);
+        if (!is_null($user->event)) {
+            if ($user->event->type == 'seminar') {
+                if (!is_null($register->event_id) AND $inputs['total'] > 0 AND ($event AND $event->is_full == 0)) {
+                    // manipulate event ID
+                    $user->event_id = true;
+                    $msg = "Anda trdaftar u/ event ".$event->title.". Pmbyaran Rp" . number_format($user->total, 0) . " harap Trfr sblm 23:59 " . date("m/d/Y") . ",info pembayaran ada pd email Anda, CS: Chat di Web";
 
-        @file_get_contents("https://importir.org/api/custom-seminar-register?name=".$inputs['name']."&email=".$inputs['email']."&phone=".$inputs['phone']."&total=".$inputs['total']."&schedule_id=".$inputs['event_id']."&reference=".$inputs['reference']."&session=event");
+                } else {
+                    $user->event_id = false;
+                    $msg    = "Kota yang Anda daftarkan masih belum ada jadwal seminar atau seminar sudah PENUH, kami akan menghubungi Anda jika terdapat update. Terimakasih";
+                }
+            } else {
+                $msg    = $user->event->before_paid_sms;
+                $msg    = $this->replaceDynamicVarEmail($msg, $user, $inputs['total']);
+            }
+            $sms->sendSMS($user->phone, $user->city, $msg, $user->lang);
+        }
+
+        @file_get_contents("https://importir.org/api/custom-seminar-register?name=".$inputs['name']."&email=".$inputs['email']."&phone=".$inputs['phone']."&total=".$inputs['total']."&schedule_id=".$inputs['event_id']."&reference=".$inputs['reference']."&session=".$event->type."");
 
         return $user;
     }
@@ -121,6 +135,7 @@ class EventsRepository
         $register->phone        = $data['phone'];
         $register->email        = $data['email'];
         $register->invoice      = $data['invoice'];
+        $register->lang         = isset($inputs['lang']) ? $inputs['lang'] : 'id';
         $register->city         = $data['city'];
         $register->total        = $data['total'];
         $register->session      = isset($event->type) ? $event->type : 1;
@@ -129,11 +144,26 @@ class EventsRepository
         $register->save();
 
         $user                   = $this->findRegister($register->id);
-
         $sms                    = new GoSMSService();
-        $message                = $user->event->before_paid_sms;
-        $message                = $this->replaceDynamicVarEmail($message, $user, $user->total, $register->lang);
-        $sms->sendSMS($user->phone, $user->city, $message, $user->lang);
+
+        if (!is_null($user->event)) {
+            if ($user->event->seminar_type == 'seminar') {
+                if ($status == 'PAID') {
+                    $msg        = "Pembayaran lunas u/ event ".$event->title.". senilai Rp" . number_format($user->total, 0) . " info lebih lengkap ada pd email Anda, CS: Chat di Web";
+                } else {
+                    $msg        = "Anda trdaftar u/ event ".$event->title.". Pmbyaran Rp" . number_format($user->total, 0) . " harap Trfr sblm 23:59 " . date("m/d/Y") . ",info pembayaran ada pd email Anda, CS: Chat di Web";
+                }
+            } else {
+                if ($status == 'PAID') {
+                    $msg        = $user->event->after_paid_sms;
+                    $msg        = $this->replaceDynamicVarEmail($msg, $user, $data['total']);
+                } else {
+                    $msg        = $user->event->before_paid_sms;
+                    $msg        = $this->replaceDynamicVarEmail($msg, $user, $data['total']);
+                }
+            }
+            $sms->sendSMS($user->phone, $user->city, $msg, $user->lang);
+        }
 
         return $user;
     }
@@ -232,19 +262,40 @@ class EventsRepository
         return $message;
     }
 
-    public function mailRegisterSeminar($user, $content)
+    public function mailRegisterSeminar($user, $total)
     {
-        $title      = "REGISTRATION SUCCESS";
-        $view       = view('mail.custom.register', compact('content'));
-        $arrConOpt  = [
-            "ssl"   => [
-                "verify_peer"   => false,
-                "verify_peer_name"  => false
-            ]
-        ];
-        $css        = asset("assets/css/mail.css");
-        $view       = new CssInliner($view, file_get_contents($css, false, stream_context_create($arrConOpt)));
-        return $this->_sendMailSendGrid($user->email, $view->convert(), $title);
+        if (!is_null($user->event)) {
+            if ($user->event->type == 'seminar') {
+                if ($user->status == 'PAID') {
+                    $title      = "Registration Paid";
+                    $view       = view('mail.event.paid', compact('user'));
+                } else {
+                    $title      = "Registration Success";
+                    $view       = view('mail.event.register', compact('user'));
+                }
+            } else {
+                if ($user->status == 'PAID') {
+                    $title      = "Registration Paid";
+                    $message    = $user->event->after_paid_email;
+                    $message    = $this->replaceDynamicVarEmail($message, $user, $total, $user->lang);
+                    $view       = view('mail.custom.register', compact('message'));
+                } else {
+                    $title      = "Registration Success";
+                    $message    = $user->event->before_paid_email;
+                    $message    = $this->replaceDynamicVarEmail($message, $user, $total, $user->lang);
+                    $view       = view('mail.custom.register', compact('message'));
+                }
+            }
+            $arrConOpt  = [
+                "ssl"   => [
+                    "verify_peer"   => false,
+                    "verify_peer_name"  => false
+                ]
+            ];
+            $css        = asset("assets/css/mail.css");
+            $view       = new CssInliner($view, file_get_contents($css, false, stream_context_create($arrConOpt)));
+            return $this->_sendMailSendGrid($user->email, $view->convert(), $title);
+        }
     }
 
     private function _sendMailSendGrid($email, $view, $title = ''){
@@ -288,7 +339,7 @@ class EventsRepository
         return $data->save();
     }
 
-    public function getEvents($array)
+    public function insertSeminar($array)
     {
         foreach($array as $row){
             if($row['seminar_type'] == 'event') {
@@ -296,17 +347,13 @@ class EventsRepository
             } else {
                 $type = $row['seminar_type'];
             }
+
             if ($row['seminar_title'] == '') {
                $title = 'Seminar Importir.org - '.$row['city'];
             } else {
                 $title = $row['seminar_title'];
             }
 
-            if (!is_null($row['info']['before_paid_email'])) {
-                $before_paid_email = $row['info']['before_paid_email'];
-            } else {
-                $before_paid_email = '<p>Hallo {{NAMA}} / {{EMAIL}}</p><p>Anda telah melakukan pendaftaran&nbsp;Event<strong> {{TITLE}}</strong>, Berikut informasi Anda:</p><p>Data Seminar</p><p>{{DESKRIPSI}}</p><p>Data Anda</p><ul><li>Nama: {{NAMA}}</li><li>Phone: {{PHONE}}</li><li>Email: {{EMAIL}}</li><li>Jumlah Peserta: {{ORANG}}</li><li>Total Bayar:&nbsp;<strong>{{TOTAL}}</strong></li></ul><p>Silahkan melakukan pembayaran ke link berikut {{TOMBOL}}</p>';
-            }
             $events = [
                 'source_id'             => $row['id'],
                 'type'                  => $type,
@@ -318,7 +365,7 @@ class EventsRepository
                 'event_date'            => $row['info']['event_date'],
                 'before_paid_sms'       => $row['info']['before_paid_sms'],
                 'after_paid_sms'        => $row['info']['after_paid_sms'],
-                'before_paid_email'     => $before_paid_email,
+                'before_paid_email'     => $row['info']['before_paid_email'],
                 'after_paid_email'      => $row['info']['after_paid_email'],
                 'is_full'               => $row['info']['is_full'],
                 'status'                => $row['info']['status']
@@ -376,6 +423,44 @@ class EventsRepository
 
     public function updateStatusRegister($response, $status)
     {
-        return Registration::where('invoice', $response['order_id'])->update(['payment' => $response['type'], 'status' => $status]);
+        $total = 1;
+        $user = Registration::where('invoice', $response['order_id'])->update(['payment' => $response['type'], 'status' => $status]);
+        $sms        = new GoSMSService();
+        if (!is_null($user->event)) {
+            $token = [
+                'ip'        => '',
+                'invoice'   => $user->invoice
+            ];
+            $download = url('tiket?token=' . encrypt(json_encode($token)));
+            if ($user->event->seminar_type == 'seminar') {
+                if ($register->status == 'PAID') {
+                    $title      = "Registration Paid";
+                    $message    = view('mail.event.paid', compact('user', 'download'));
+                    $msg        = "Pembayaran u/ event ".$event->title.". senilai Rp" . number_format($user->total, 0) . " info lebih lengkap ada pd email Anda, CS: Chat di Web";
+                }
+            } else {
+                $title      = "Registration Paid";
+                $message    = $user->event->before_paid_email;
+                $message    = $this->replaceDynamicVarEmail($message, $user, $total);
+                $message    = view('mail.event.paid', compact('user', 'download'));
+            }
+            $arrConOpt  = [
+                "ssl"   => [
+                    "verify_peer"   => false,
+                    "verify_peer_name"  => false
+                ]
+            ];
+            $sms->sendSMS($user->phone, $user->city, $message, $user->lang);
+            $css        = asset("assets/css/mail.css");
+            $view       = new CssInliner($view, file_get_contents($css, false, stream_context_create($arrConOpt)));
+            return $this->_sendMailSendGrid($user->email, $view->convert(), $title);
+        }
+        return '';
+    }
+
+    public function changeStatusEvent($id, $status)
+    {
+        $user = Events::where('id', $id)->update(['status' => $status]);
+        return $user;
     }
 }
