@@ -24,7 +24,7 @@ class EventsRepository
 
     public function findEvent($id = null)
     {
-        return Events::with([])->where('source_id', $id);
+        return Events::with([])->find($id);
     }
 
     public function getEventBySearch($inputs = [])
