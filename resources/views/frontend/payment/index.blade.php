@@ -89,7 +89,7 @@
 @endsection
 
 @section('js')
-@if (env('MIDTRANS_PROD') != true)
+@if (env('APP_ENV') != production)
 <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
 @else
 <script src="https://app.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
