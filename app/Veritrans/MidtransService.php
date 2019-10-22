@@ -15,7 +15,8 @@ class MidtransService
         $this->serverKey        = env('MIDTRANS_SERVER_KEY');
     }
 
-    public function notification() {
+    public function notification()
+    {
 
         Veritrans::$isProduction    = $this->midtransProd;
         Veritrans::$serverKey       = $this->serverKey;
@@ -23,9 +24,11 @@ class MidtransService
         $midtrans = new Veritrans;
         $json_result = file_get_contents('php://input');
         $result = json_decode($json_result);
-        if($result){
-            $notif = $midtrans->status($result->order_id);
+        if (!$result) {
+            return false;
         }
+
+        $notif = $midtrans->status($result->order_id);
 
         $transaction    = $notif->transaction_status;
         $type           = $notif->payment_type;
@@ -146,12 +149,12 @@ class MidtransService
         $complete_request = [
             "transaction_details" => [
                 "order_id"      => $invoice,
-                "gross_amount"  => (int)$amount
+                "gross_amount"  => (int) $amount
             ],
             "item_details"  => [
                 [
                     "id"    => $invoice,
-                    "price" => (int)$amount,
+                    "price" => (int) $amount,
                     "quantity"  => 1,
                     "name"      => "Pembayaran Seminar",
                     "category"  => "Event",

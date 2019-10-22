@@ -11,7 +11,7 @@ class PaymentRepository
     {
         return Registration::with(['payment'])->get();
     }
-    
+
     public function findInvoice($inv = '')
     {
         return Payment::with([])->where('invoice_id', $inv)->first();
@@ -37,18 +37,19 @@ class PaymentRepository
         return '';
     }
 
-    public function makePaymentMidtrans($invoice, $type){
-        if(!$invoice){
+    public function makePaymentMidtrans($invoice, $type)
+    {
+        if (!$invoice) {
             return false;
         }
 
         $data      = $this->findInvoice($invoice);
-        if($data AND $data->status == 'success'){
+        if ($data and $data->status == 'success') {
             // already success
             return false;
         }
 
-        if(!$data){
+        if (!$data) {
             // create new
             $data                       = new Payment();
             $data->invoice_id           = $invoice;
@@ -64,10 +65,38 @@ class PaymentRepository
     public function notifyStatusMidtrans($response)
     {
         $data       = $this->findInvoice($response['order_id']);
-        if(!$data){
+        if (!$data) {
             return false;
         }
-        if($data AND $data->transaction_status == 'success'){
+        if ($data and $data->transaction_status == 'success') {
+            // already success
+            return false;
+        }
+
+        $dump = json_decode($response['dump']);
+
+        $data->invoice_id           = $dump->order_id;
+        $data->transaction_id       = $dump->transaction_id;
+        $data->transaction_time     = $dump->transaction_time;
+        $data->payment_type         = $dump->payment_type;
+        $data->gross_amount         = $dump->gross_amount;
+        $data->transaction_status   = $response['status_server'];
+        $data->fraud_status         = $dump->fraud_status;
+        $data->paid_by              = 'MIDTRANS';
+        $data->dump                 = $response['dump'];
+        $data->save();
+
+        return $data;
+    }
+
+    public function savePaymentMemberOrder($response)
+    {
+        $data = new Payment();
+        $data       = $this->findInvoice($response['order_id']);
+        if (!$data) {
+            return false;
+        }
+        if ($data and $data->transaction_status == 'success') {
             // already success
             return false;
         }

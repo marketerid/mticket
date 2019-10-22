@@ -6,22 +6,25 @@ use Illuminate\Http\Request;
 use App\Events\EventsRepository;
 use App\Payment\PaymentRepository;
 use App\Veritrans\MidtransService;
+use Illuminate\Support\Facades\Log;
 
 class ApiController extends Controller
 {
     protected $event, $payment;
-    public function __construct(EventsRepository $event, PaymentRepository $payment) {
+    public function __construct(EventsRepository $event, PaymentRepository $payment)
+    {
         $this->event    = $event;
         $this->payment  = $payment;
     }
 
-    public function checkoutMidtrans(Request $request) {
+    public function checkoutMidtrans(Request $request)
+    {
         $data                   = file_get_contents('php://input');
         $dataJson               = \GuzzleHttp\json_decode($data);
         $register               = $this->event->findInvoice($dataJson->invoice);
 
         $merchantMakePayment    = $this->payment->makePaymentMidtrans($dataJson->invoice, $dataJson->type);
-        if(!$merchantMakePayment){
+        if (!$merchantMakePayment) {
             return response()->json([
                 'status'    => false,
                 'message'   => "Payment Not Available"
@@ -35,16 +38,19 @@ class ApiController extends Controller
         ]);
     }
 
-    public function savePaymentMidtrans($invoice, Request $request) {
+    public function savePaymentMidtrans($invoice, Request $request)
+    {
         $result = $this->payment->savePaymentMidtrans($invoice, $request->all());
         return '';
     }
 
-    public function paymentNotificationMidtrans() {
+    public function paymentNotificationMidtrans(Request $request)
+    {
         $midtrans   = new MidtransService();
         $response   = $midtrans->notification();
+        // Log::error("Midtrans Notif: " . json_encode($response));
 
-        if(is_null($response['order_id'])){
+        if (is_null($response['order_id'])) {
             // something error
             return response()->json([
                 'status'    => false,
@@ -52,8 +58,22 @@ class ApiController extends Controller
             ]);
         }
 
+        $bmo = substr($response['order_id'], 0, 3);
+        if ($response['status_server'] == 'success' && $bmo == 'BMO') {
+            $input = file_get_contents('php://input');
+
+            $ch = curl_init(env('IMPORTIR_URL_MIDTRANS'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $input);
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $result = curl_exec($ch);
+            curl_close($ch);
+            return response()->json($result);
+        }
+
         $paymentData    = $this->payment->notifyStatusMidtrans($response);
-        if(!$paymentData){
+        if (!$paymentData) {
             return response()->json([
                 'status'    => false,
                 'message'   => "Already success"
@@ -62,24 +82,26 @@ class ApiController extends Controller
 
         if ($response['status_server'] == 'success') {
             $this->event->updateStatusRegister($response, 'PAID');
-            // $notif_org = file_get_contents("https://importir.org/api/seminar-update/".$response['order_id']."/MTICKET-MIDTRANS?token=syigdfjhagsjdf766et4wff6");
+            $notif_org = file_get_contents("https://importir.org/api/seminar-update/" . $response['order_id'] . "/MTICKET-MIDTRANS?token=syigdfjhagsjdf766et4wff6");
         }
 
         return response()->json($response);
     }
 
-    public function getSeminar() {
+    public function getSeminar()
+    {
         $data = file_get_contents("https://importir.com/api/seminar-json?key=faizalganteng");
         $array = json_decode($data, true);
         if ($array) {
             $this->event->insertSeminar($array);
         }
-        
+
         $json['message'] = 'success';
         return response()->json($json);
     }
 
-    public function changeStatusEvent() {
+    public function changeStatusEvent()
+    {
         $events = $this->event->getEvent();
         foreach ($events as $event) {
             $events = $event->event_date;
