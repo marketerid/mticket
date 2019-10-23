@@ -34,18 +34,30 @@ class IndexController extends Controller
         $event = $this->event->getEventByType($type);
         $city  = $this->event->getCity();
         if (!$event->count()) {
-            abort(404);
+            alertNotify(false, 'Event Tidak Tersedia', $request);
+            return redirect('event');
         }
         return view('frontend.listevent.index', compact('event', 'city'));
     }
 
-    public function viewEvent($type = null, $id = null)
+    public function viewEvent(Request $request, $type = null, $id = null)
     {
+        $today = date("Y-m-d");
         $event = $this->event->findEvent($id);
         if (!$event) {
-            return 'no event';
-        } elseif ($event->type !== $type) {
-            return 'no type';
+            alertNotify(false, 'Event Tidak Tersedia', $request);
+            return redirect('event');
+        }
+
+        if ($event->type !== $type) {
+            alertNotify(false, 'Event Tidak Tersedia', $request);
+            return redirect('event');
+        }
+
+        if ($today > $event->event_date) {
+            $this->event->changeStatusEvent($event->id, 0);
+            alertNotify(false, 'Event Tidak Tersedia', $request);
+            return redirect('event');
         }
 
         return view('frontend.viewevent.index', compact('event'));
@@ -66,7 +78,7 @@ class IndexController extends Controller
 
     public function searchInvoiceCheck(Request $request)
     {
-        $content   = file_get_contents("https://importir.com/api/search-invoice?invoice=".$request->input('invoice')."&email=".$request->input('email')."");
+        $content   = file_get_contents("https://importir.com/api/search-invoice?invoice=" . $request->input('invoice') . "&email=" . $request->input('email') . "");
         $data  = json_decode($content, true);
 
         if (isset($data['status'])) {

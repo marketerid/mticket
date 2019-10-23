@@ -11,6 +11,9 @@
 <section class="section-refine-search">
 	<div class="container">
 		<div class="row">
+			<!--@if(Session::has('status'))-->
+			<p class="alert alert-danger">{{ Session::get('status') }}</p>
+			<!--@endif-->
 			<form action="{{ url('search') }}" method="GET">
 				<div class="keyword col-sm-6 col-md-6">
 					<label>Search Keyword</label>
@@ -21,7 +24,7 @@
 					<label>City</label>
 					<select name="city_id" class="selectpicker dropdown">
 						@foreach ($city as $c)
-						  <option value="{{ $c['source_id'] }}">{{ $c['city'] }}</option>
+						<option value="{{ $c['source_id'] }}">{{ $c['city'] }}</option>
 						@endforeach
 					</select>
 				</div>
@@ -36,26 +39,26 @@
 	<div class="container">
 		<div class="row">
 			<div class="section-content">
-			  <div class="tab-content">
-			    <ul class="clearfix">
-					@foreach ($event as $e)
-					<li>
-						<a href="{{ url('event',$e->type) }}/{{ $e->id }}">
-						  <div class="date">
-						    <span class="day">{{ date('j', strtotime($e->event_date)) }}</span>
-						    <span class="month">{{ date('M', strtotime($e->event_date)) }}</span>
-						    <span class="year">{{ date('Y', strtotime($e->event_date)) }}</span>
-						  </div>
-						  <img src="{{ $e->image }}" alt="image">
-						  <div class="info">
-						    <p>{{ $e->title }} <span>IDR {{ number_format($e->price, 0) }}</span></p>
-						    <a href="{{ url('event',$e->type) }}/{{ $e->id }}" class="get-ticket">Sign Up</a>
-						  </div>
-						</a>
-					</li>
-					@endforeach
-				</ul>
-			  </div>
+				<div class="tab-content">
+					<ul class="clearfix">
+						@foreach ($event as $e)
+						<li>
+							<a href="{{ url('event',$e->type) }}/{{ $e->id }}">
+								<div class="date">
+									<span class="day">{{ date('j', strtotime($e->event_date)) }}</span>
+									<span class="month">{{ date('M', strtotime($e->event_date)) }}</span>
+									<span class="year">{{ date('Y', strtotime($e->event_date)) }}</span>
+								</div>
+								<img src="{{ $e->image }}" alt="image">
+								<div class="info">
+									<p>{{ $e->title }} <span>IDR {{ number_format($e->price, 0) }}</span></p>
+									<a href="{{ url('event',$e->type) }}/{{ $e->id }}" class="get-ticket">Sign Up</a>
+								</div>
+							</a>
+						</li>
+						@endforeach
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>

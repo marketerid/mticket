@@ -7,10 +7,10 @@
             <div id="primary" class="col-md-6">
                 <div class="section-order-details-event-title">
                     <span class="event-caption">{{ $event->title }}</span>
-                    <img class="event-img" src="https://importir.com/public-images/ambon.png" alt="image">
+                    <img class="event-img" src="{{ $event->image }}" alt="image">
                 </div>
-            </div>  
-            
+            </div>
+
             <div id="secondary" class="col-md-6">
                 <form action="{{ url('registration') }}" method="POST">
                     <div class="section-order-details-event-info" style="margin-bottom: 20px;">
@@ -20,7 +20,7 @@
                                 <p>{!! $event->description !!}</p>
                             </div>
                         </div>
-                        
+
                         <div class="seat-details">
                             <div class="seat-details-info">
                                 <h3>Fill Your Personal Details</h3>
@@ -63,10 +63,14 @@
 
 @section('js')
 <script>
-var price   = {{ $event->price }};
-$("#total").change(function(){
-    var qty = $(this).val();
-    $('#sumtotal').html(qty*price);
-});
+    var price = {
+        {
+            $event - > price
+        }
+    };
+    $("#total").change(function() {
+        var qty = $(this).val();
+        $('#sumtotal').html(qty * price);
+    });
 </script>
 @endsection

@@ -16,7 +16,7 @@ Route::any('search-invoice/check', 'IndexController@searchInvoiceCheck');
 Route::post('registration', 'RegistrationController@index');
 Route::get('payment', 'RegistrationController@payment');
 
-Route::get('tiket-download','RegistrationController@tiketDownload');
+Route::get('tiket-download', 'RegistrationController@tiketDownload');
 
 
 
@@ -41,11 +41,15 @@ Route::get('tiket-download','RegistrationController@tiketDownload');
 
 
 
-
-Route::get('terms-condition', function(){
+Route::get('about-us', function () {
+    return view('frontend.pages.about');
+});
+Route::get('terms-condition', function () {
     return view('frontend.pages.terms');
 });
-
+Route::get('refund-policy', function () {
+    return view('frontend.pages.refund');
+});
 
 
 

@@ -14,12 +14,12 @@ class EventsRepository
 {
     public function getEvent()
     {
-        return Events::orderBy('id', 'desc')->get();
+        return Events::orderBy('id', 'desc')->where('status', 1)->get();
     }
 
     public function getEventByType($type = '')
     {
-        return Events::where('type', $type)->get();
+        return Events::where('type', $type)->where('status', 1)->get();
     }
 
     public function findEvent($id = null)
@@ -49,7 +49,7 @@ class EventsRepository
 
     public function findScheduleByCity($city = null)
     {
-        if(is_null($city)){
+        if (is_null($city)) {
             return null;
         }
 
@@ -59,7 +59,7 @@ class EventsRepository
             ->where('status', 1)
             ->first();
 
-        if(!$event){
+        if (!$event) {
             return null;
         }
 
@@ -75,7 +75,7 @@ class EventsRepository
     {
         $register               = new Registration();
         $event                  = $this->getScheduleByIdAndStatus($inputs['event_id'], 1);
-        if(!$event){
+        if (!$event) {
             return false;
         }
 
@@ -90,7 +90,7 @@ class EventsRepository
         $register->phone        = $inputs['phone'];
         $register->email        = $inputs['email'];
         $register->city         = $event->city;
-        $register->total        = $event->price * $inputs['total'] + $uniquecode;
+        $register->total        = $event->price * $inputs['total'];
         $register->session      = $event->type;
         $register->reference    = $inputs['reference'];
         $register->status       = 'PENDING';
@@ -101,11 +101,10 @@ class EventsRepository
         $sms                    = new GoSMSService();
         if (!is_null($user->event)) {
             if ($user->event->type == 'seminar') {
-                if (!is_null($register->event_id) AND $inputs['total'] > 0 AND ($event AND $event->is_full == 0)) {
+                if (!is_null($register->event_id) and $inputs['total'] > 0 and ($event and $event->is_full == 0)) {
                     // manipulate event ID
                     $user->event_id = true;
-                    $msg = "Anda trdaftar u/ event ".$event->title.". Pmbyaran Rp" . number_format($user->total, 0) . " harap Trfr sblm 23:59 " . date("m/d/Y") . ",info pembayaran ada pd email Anda, CS: Chat di Web";
-
+                    $msg = "Anda trdaftar u/ event " . $event->title . ". Pmbyaran Rp" . number_format($user->total, 0) . " harap Trfr sblm 23:59 " . date("m/d/Y") . ",info pembayaran ada pd email Anda, CS: Chat di Web";
                 } else {
                     $user->event_id = false;
                     $msg    = "Kota yang Anda daftarkan masih belum ada jadwal seminar atau seminar sudah PENUH, kami akan menghubungi Anda jika terdapat update. Terimakasih";
@@ -117,7 +116,7 @@ class EventsRepository
             $sms->sendSMS($user->phone, $user->city, $msg, $user->lang);
         }
 
-        @file_get_contents("https://importir.org/api/custom-seminar-register?name=".$inputs['name']."&email=".$inputs['email']."&phone=".$inputs['phone']."&total=".$inputs['total']."&schedule_id=".$inputs['event_id']."&reference=".$inputs['reference']."&session=".$event->type."");
+        @file_get_contents("https://importir.org/api/custom-seminar-register?name=" . $inputs['name'] . "&email=" . $inputs['email'] . "&phone=" . $inputs['phone'] . "&total=" . $inputs['total'] . "&schedule_id=" . $inputs['event_id'] . "&reference=" . $inputs['reference'] . "&session=" . $event->type . "");
 
         return $user;
     }
@@ -126,7 +125,7 @@ class EventsRepository
     {
         $register               = new Registration();
         $event                  = $this->getScheduleByIdAndStatus($data['schedule_id'], 1);
-        if(!$event){
+        if (!$event) {
             return false;
         }
 
@@ -149,9 +148,9 @@ class EventsRepository
         if (!is_null($user->event)) {
             if ($user->event->seminar_type == 'seminar') {
                 if ($status == 'PAID') {
-                    $msg        = "Pembayaran lunas u/ event ".$event->title.". senilai Rp" . number_format($user->total, 0) . " info lebih lengkap ada pd email Anda, CS: Chat di Web";
+                    $msg        = "Pembayaran lunas u/ event " . $event->title . ". senilai Rp" . number_format($user->total, 0) . " info lebih lengkap ada pd email Anda, CS: Chat di Web";
                 } else {
-                    $msg        = "Anda trdaftar u/ event ".$event->title.". Pmbyaran Rp" . number_format($user->total, 0) . " harap Trfr sblm 23:59 " . date("m/d/Y") . ",info pembayaran ada pd email Anda, CS: Chat di Web";
+                    $msg        = "Anda trdaftar u/ event " . $event->title . ". Pmbyaran Rp" . number_format($user->total, 0) . " harap Trfr sblm 23:59 " . date("m/d/Y") . ",info pembayaran ada pd email Anda, CS: Chat di Web";
                 }
             } else {
                 if ($status == 'PAID') {
@@ -173,9 +172,10 @@ class EventsRepository
         return Registration::with(['event'])->where('invoice', $invoice)->first();
     }
 
-    public function generateTokenTiket($invoice = ''){
+    public function generateTokenTiket($invoice = '')
+    {
         $register   = $this->findInvoice($invoice);
-        if(!$register){
+        if (!$register) {
             return false;
         }
 
@@ -207,8 +207,9 @@ class EventsRepository
             ->first();
     }
 
-    public function invoiceToPdf($user){
-        if(!$user){
+    public function invoiceToPdf($user)
+    {
+        if (!$user) {
             return response('No invoice Data', 404);
         }
 
@@ -220,7 +221,7 @@ class EventsRepository
 
         $mpdf   = new \Mpdf\Mpdf();
         $mpdf->WriteHTML($view);
-        $name   = "pdf-" . $user->invoice .".pdf";
+        $name   = "pdf-" . $user->invoice . ".pdf";
 
         return $mpdf->Output($name, 'I');
     }
@@ -238,12 +239,12 @@ class EventsRepository
         $message = str_replace("{{ORANG}}", $total, $message);
         $total      = $user->total;
         $pay        = "PAY";
-        if($lang == 'en'){
+        if ($lang == 'en') {
             $total  = $total / 275;
         }
         $message = str_replace("{{TOTAL}}", number_format($total, 0), $message);
-        $message = str_replace("{{LINKTOMBOL}}", '<a href="' . url(env('IMPORTIRORG_API') . '/payment?token=' . $token) . '">'. $pay .'</a>', $message);
-        $message = str_replace("{{TOMBOL}}", '<a href="' . url(env('IMPORTIRORG_API') . '/payment?token=' . $token) . '">'. $pay .'</a>', $message);
+        $message = str_replace("{{LINKTOMBOL}}", '<a href="' . url(env('IMPORTIRORG_API') . '/payment?token=' . $token) . '">' . $pay . '</a>', $message);
+        $message = str_replace("{{TOMBOL}}", '<a href="' . url(env('IMPORTIRORG_API') . '/payment?token=' . $token) . '">' . $pay . '</a>', $message);
         $message = str_replace("{{TANGGAL}}", date("d-M-Y", strtotime($user->event->event_date)), $message);
         if (strpos($message, '{{HARI}}') !== false) {
             $timestamp = strtotime($user->event->event_date);
@@ -298,7 +299,8 @@ class EventsRepository
         }
     }
 
-    private function _sendMailSendGrid($email, $view, $title = ''){
+    private function _sendMailSendGrid($email, $view, $title = '')
+    {
         $json_string    = [
             'to'        => [
                 'info@mticket.asia',
@@ -341,15 +343,15 @@ class EventsRepository
 
     public function insertSeminar($array)
     {
-        foreach($array as $row){
-            if($row['seminar_type'] == 'event') {
+        foreach ($array as $row) {
+            if ($row['seminar_type'] == 'event') {
                 $type = 'seminar';
             } else {
                 $type = $row['seminar_type'];
             }
 
             if ($row['seminar_title'] == '') {
-               $title = 'Seminar Importir.org - '.$row['city'];
+                $title = 'Seminar Importir.org - ' . $row['city'];
             } else {
                 $title = $row['seminar_title'];
             }
@@ -373,9 +375,9 @@ class EventsRepository
 
             $data = Events::where('source_id', $row['id'])->first();
             if ($data) {
-              $data->update($events);
+                $data->update($events);
             } else {
-              $data = Events::create($events);  
+                $data = Events::create($events);
             }
         }
     }
@@ -436,7 +438,7 @@ class EventsRepository
                 if ($register->status == 'PAID') {
                     $title      = "Registration Paid";
                     $message    = view('mail.event.paid', compact('user', 'download'));
-                    $msg        = "Pembayaran u/ event ".$event->title.". senilai Rp" . number_format($user->total, 0) . " info lebih lengkap ada pd email Anda, CS: Chat di Web";
+                    $msg        = "Pembayaran u/ event " . $event->title . ". senilai Rp" . number_format($user->total, 0) . " info lebih lengkap ada pd email Anda, CS: Chat di Web";
                 }
             } else {
                 $title      = "Registration Paid";
