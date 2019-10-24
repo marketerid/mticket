@@ -48,7 +48,7 @@ class ApiController extends Controller
     {
         $midtrans   = new MidtransService();
         $response   = $midtrans->notification();
-        Log::error("Midtrans Notif: " . response()->json($response));
+        Log::error("Midtrans Notif: " . response()->json($request->all()));
 
         if (is_null($response['order_id'])) {
             // something error
