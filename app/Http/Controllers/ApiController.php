@@ -60,10 +60,9 @@ class ApiController extends Controller
 
         $bmo = substr($response['order_id'], 0, 3);
         if ($response['status_server'] == 'success' && $bmo == 'BMO') {
+            // $this->payment->savePaymentFromNotify($response);
             $input = file_get_contents('php://input');
-
-            // $ch = curl_init(env('IMPORTIR_URL_MIDTRANS'));
-            $ch = curl_init('https://stage.importir.com/api/midtrans/notification');
+            $ch = curl_init(env('IMPORTIR_URL_MIDTRANS'));
             curl_setopt($ch, CURLOPT_POSTFIELDS, $input);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));

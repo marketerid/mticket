@@ -1,7 +1,10 @@
 {
     "name": "laravel/laravel",
     "description": "Cuber",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -20,7 +23,9 @@
         "mailjet/mailjet-apiv3-php": "^1.4",
         "mews/captcha": "^2.1",
         "milon/barcode": "^5.3",
-        "mpdf/mpdf": "^7.1"
+        "mpdf/mpdf": "^7.1",
+        "nesbot/carbon": "2.25.0 as 1.39.0",
+        "kylekatarnls/laravel-carbon-2": "^1.0.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
