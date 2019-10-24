@@ -21,14 +21,23 @@ class MidtransService
         Veritrans::$isProduction    = $this->midtransProd;
         Veritrans::$serverKey       = $this->serverKey;
 
-        $midtrans = new Veritrans;
-        $json_result = file_get_contents('php://input');
-        $result = json_decode($json_result);
-        if (!$result) {
-            return false;
-        }
+        try {
+            $midtrans = new Veritrans;
+            $json_result = file_get_contents('php://input');
+            $result = json_decode($json_result);
+            $notif = $midtrans->status($result->order_id);
+        } catch (\Exception $e) {
+            Log::error("Midtrans Notification Error TEST: " . json_encode([$e, file_get_contents("php://input")]));
 
-        $notif = $midtrans->status($result->order_id);
+            return [
+                'status'    => false,
+                'orderId'   => null,
+                'type'      => '',
+                'message'   => 'Something error',
+                'status_server' => '',
+                'dump'      => json_encode([])
+            ];
+        }
 
         $transaction    = $notif->transaction_status;
         $type           = $notif->payment_type;
