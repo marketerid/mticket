@@ -180,6 +180,7 @@ return [
         Cartalyst\Sentinel\Laravel\SentinelServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
+        App\Providers\SlackErrorNotifierServiceProvider::class,
     ],
 
     /*
