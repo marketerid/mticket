@@ -24,7 +24,7 @@
         "mews/captcha": "^2.1",
         "milon/barcode": "^5.3",
         "mpdf/mpdf": "^7.1",
-        "nesbot/carbon": "2.25.0 as 1.39.0",
+        "nesbot/carbon": "1.39.0",
         "kylekatarnls/laravel-carbon-2": "^1.0.0"
     },
     "require-dev": {
