@@ -46,8 +46,10 @@ class ApiController extends Controller
 
     public function paymentNotificationMidtrans(Request $request)
     {
-        $midtrans   = new MidtransService();
         Log::error("Midtrans Notif: " . response()->json($request->all()));
+        dd($request->all());
+        $midtrans   = new MidtransService();
+
         $response   = $midtrans->notification();
 
         if (is_null($response['order_id'])) {
