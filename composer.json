@@ -23,9 +23,7 @@
         "mailjet/mailjet-apiv3-php": "^1.4",
         "mews/captcha": "^2.1",
         "milon/barcode": "^5.3",
-        "mpdf/mpdf": "^7.1",
-        "nesbot/carbon": "1.39.0",
-        "kylekatarnls/laravel-carbon-2": "^1.0.0"
+        "mpdf/mpdf": "^7.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
