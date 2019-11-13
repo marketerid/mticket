@@ -18,7 +18,7 @@ Route::get('payment', 'RegistrationController@payment');
 
 Route::get('tiket-download', 'RegistrationController@tiketDownload');
 
-
+Route::get('reg/{id}', 'IndexController@regId');
 
 
 

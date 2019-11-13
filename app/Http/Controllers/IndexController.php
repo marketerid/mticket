@@ -102,4 +102,9 @@ class IndexController extends Controller
         alertNotify(true, "Invoice found successfully", $request);
         return redirect('payment?token=' . $token);
     }
+
+    public function regId(Request $request, $id)
+    {
+        return view('frontend.register.index', compact('id'));
+    }
 }
